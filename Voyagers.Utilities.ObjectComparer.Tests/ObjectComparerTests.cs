@@ -18,6 +18,23 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
         }
 
         [Fact]
+        public void TwoDifferentTypesShouldReturnVariance()
+        {
+            // Arrange and Act
+            List<ObjectVariance> variances = ObjectComparer.GetObjectVariances(1, "test").ToList();
+
+            // Assert
+            Assert.NotEmpty(variances);
+            Assert.Equal(1, variances.Count);
+            Assert.Equal("value", variances[0].PropertyName);
+            Assert.Equal(1, variances[0].Level);
+            Assert.Equal(1, variances[0].Value1);
+            Assert.Equal("test", variances[0].Value2);
+            Assert.Equal(null, variances[0].ParentReference1);
+            Assert.Equal(null, variances[0].ParentReference2);
+        }
+
+        [Fact]
         public void TwoNullsShouldReturnNoVariance()
         {
             // Arrange and Act
@@ -317,7 +334,7 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
             Assert.Equal(c1, variances[0].ParentReference1);
             Assert.Equal(c2, variances[0].ParentReference2);
             Assert.Equal(3, variances[0].Level);
-            Assert.Equal(new List<int> { 1, 2, 3 }, variances[0].Value1);
+            Assert.Equal(new List<int> {1, 2, 3}, variances[0].Value1);
             Assert.Equal(Enumerable.Empty<int>(), variances[0].Value2);
         }
 
