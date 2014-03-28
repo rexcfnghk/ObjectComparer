@@ -8,6 +8,26 @@ namespace Voyagers.Utilities.ObjectComparer
 {
     public static class ObjectComparer
     {
+        private static readonly Dictionary<Type, string> _aliases = new Dictionary<Type, string>
+        {
+            { typeof(byte), "byte" },
+            { typeof(sbyte), "sbyte" },
+            { typeof(short), "short" },
+            { typeof(ushort), "ushort" },
+            { typeof(int), "int" },
+            { typeof(uint), "uint" },
+            { typeof(long), "long" },
+            { typeof(ulong), "ulong" },
+            { typeof(float), "float" },
+            { typeof(double), "double" },
+            { typeof(decimal), "decimal" },
+            { typeof(object), "object" },
+            { typeof(bool), "bool" },
+            { typeof(char), "char" },
+            { typeof(string), "string" },
+            { typeof(void), "void" }
+        };
+
         /// <summary>
         ///  Return object variances between two dynamic objects, serves as an entry point to all comparisons
         /// </summary>
@@ -83,7 +103,7 @@ namespace Voyagers.Utilities.ObjectComparer
             {
                 if (!object1.Equals(object2))
                 {
-                    yield return new ObjectVariance("value", object1, object2, level, new ObjectVariance(propertyName, parent1, parent2, level - 1, null));
+                    yield return new ObjectVariance(propertyName ?? "value", object1, object2, level, new ObjectVariance(propertyName, parent1, parent2, level - 1, null));
                 }
             }
 
@@ -93,15 +113,25 @@ namespace Voyagers.Utilities.ObjectComparer
                 TryGetIEnumerableGenericArgument(object2Type, out object2GenericArgument) &&
                 object1GenericArgument == object2GenericArgument)
             {
-                var result = GetEnumerableVariances(object1, object2, level, new ObjectVariance(propertyName, parent1, parent2, level - 1, null));
+                var parentVariance = new ObjectVariance(propertyName,
+                                                        parent1 ?? object1,
+                                                        parent2 ?? object2,
+                                                        level - 1,
+                                                        null);
+                IEnumerable<ObjectVariance> result = GetEnumerableVariances(object1,
+                                                                            object2,
+                                                                            level,
+                                                                            parentVariance);
                 foreach (ObjectVariance objectVariance in result)
                 {
+                    string genericAlias;
+                    _aliases.TryGetValue(object1GenericArgument, out genericAlias);
                     yield return
-                        new ObjectVariance(String.Format("IEnumerable<{0}>", object1GenericArgument),
+                        new ObjectVariance(String.Format("IEnumerable<{0}> " + objectVariance.PropertyName, genericAlias, propertyName),
                                            objectVariance.Value1,
                                            objectVariance.Value2,
                                            objectVariance.Level,
-                                           new ObjectVariance(propertyName, parent1, parent2, objectVariance.Level - 1, null));
+                                           parentVariance);
                 }
 
                 // Required for more than one difference in inner IEnumerables
@@ -141,7 +171,7 @@ namespace Voyagers.Utilities.ObjectComparer
                             GetObjectVariances(value1List[i], value2List[i], level, parentVariance.Value1, parentVariance.Value2))
                     {
                         yield return
-                            new ObjectVariance("{0} at index " + i,
+                            new ObjectVariance("{1} at index " + i,
                                                diff.Value1,
                                                diff.Value2,
                                                diff.Level + 1,
