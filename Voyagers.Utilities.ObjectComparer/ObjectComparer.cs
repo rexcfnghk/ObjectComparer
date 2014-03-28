@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,13 +29,9 @@ namespace Voyagers.Utilities.ObjectComparer
             }
 
             // ReSharper disable once PossibleNullReferenceException
-            if (object1.GetType() != object2.GetType())
-            {
-                return new List<ObjectVariance> { new ObjectVariance("value", object1, object2, 1, null, null) }
-                    .AsReadOnly();
-            }
-
-            return GetObjectVariances(object1, object2, 1, null, null);
+            return object1.GetType() != object2.GetType()
+                       ? new ObjectVariance("value", object1, object2, 1, null, null).Yield()
+                       : GetObjectVariances(object1, object2, 1, null, null);
         }
 
         private static IEnumerable<ObjectVariance> GetObjectVariances(dynamic object1,
@@ -188,6 +184,22 @@ namespace Voyagers.Utilities.ObjectComparer
         {
             Type genericArgument;
             return TryGetIEnumerableGenericArgument(type, out genericArgument);
+        }
+
+        /// <summary>
+        /// Convert item of type <typeparam name="T">T</typeparam> to IEnumerable&lt;<typeparam name="T">T</typeparam>&gt;
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        internal static IEnumerable<T> Yield<T>(this T item)
+        {
+            if (ReferenceEquals(item, null))
+            {
+                throw new ArgumentNullException("item");
+            }
+
+            yield return item;
         }
 
         private static IEnumerable<ObjectVariance> CheckNullObjectsVariance(object object1,
