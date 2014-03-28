@@ -18,6 +18,22 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
         }
 
         [Fact]
+        public void TwoDifferentIntsShouldReturnVariance()
+        {
+            // Arrange and Act
+            List<ObjectVariance> variances = ObjectComparer.GetObjectVariances(1, 2).ToList();
+
+            // Assert
+            Assert.NotEmpty(variances);
+            Assert.Equal(1, variances.Count);
+            Assert.Equal("value", variances[0].PropertyName);
+            Assert.Equal(1, variances[0].Level);
+            Assert.Equal(1, variances[0].Value1);
+            Assert.Equal(2, variances[0].Value2);
+            Assert.Equal(null, variances[0].ParentVariance);
+        }
+
+        [Fact]
         public void TwoDifferentTypesShouldReturnVariance()
         {
             // Arrange and Act
@@ -239,10 +255,16 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
             Assert.Equal('e', variances[0].Value2);
 
             // Parent
-            Assert.Equal(c1, variances[0].ParentVariance.Value1);
-            Assert.Equal(c2, variances[0].ParentVariance.Value2);
+            Assert.NotNull(variances[0].ParentVariance);
+            Assert.Equal("Tast", variances[0].ParentVariance.Value1);
+            Assert.Equal("Test", variances[0].ParentVariance.Value2);
             Assert.Equal("String1", variances[0].ParentVariance.PropertyName);
-            Assert.Null(variances[0].ParentVariance.ParentVariance);
+            Assert.NotNull(variances[0].ParentVariance.ParentVariance);
+
+            Assert.Equal(c1, variances[0].ParentVariance.ParentVariance.Value1);
+            Assert.Equal(c2, variances[0].ParentVariance.ParentVariance.Value2);
+            Assert.Equal("String1", variances[0].ParentVariance.ParentVariance.PropertyName);
+            Assert.Null(variances[0].ParentVariance.ParentVariance.ParentVariance);
         }
 
         [Fact]
