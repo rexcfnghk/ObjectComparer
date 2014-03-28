@@ -30,8 +30,7 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
             Assert.Equal(1, variances[0].Level);
             Assert.Equal(1, variances[0].Value1);
             Assert.Equal("test", variances[0].Value2);
-            Assert.Equal(null, variances[0].ParentReference1);
-            Assert.Equal(null, variances[0].ParentReference2);
+            Assert.Equal(null, variances[0].ParentVariance);
         }
 
         [Fact]
@@ -57,8 +56,7 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
             Assert.Equal(1, variances[0].Level);
             Assert.Equal(1, variances[0].Value1);
             Assert.Equal(null, variances[0].Value2);
-            Assert.Equal(null, variances[0].ParentReference1);
-            Assert.Equal(null, variances[0].ParentReference2);
+            Assert.Equal(null, variances[0].ParentVariance);
         }
 
         [Fact]
@@ -74,8 +72,7 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
             Assert.Equal(1, variances[0].Level);
             Assert.Equal(null, variances[0].Value1);
             Assert.Equal(1, variances[0].Value2);
-            Assert.Equal(null, variances[0].ParentReference1);
-            Assert.Equal(null, variances[0].ParentReference2);
+            Assert.Equal(null, variances[0].ParentVariance);
         }
 
         [Fact]
@@ -100,8 +97,7 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
             Assert.Equal("IEnumerable at index 1", variances[0].PropertyName);
             Assert.Equal('e', variances[0].Value1);
             Assert.Equal('a', variances[0].Value2);
-            Assert.Null(variances[0].ParentReference1);
-            Assert.Null(variances[0].ParentReference2);
+            Assert.Null(variances[0].ParentVariance);
         }
 
         [Fact]
@@ -135,8 +131,7 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
             Assert.Equal(2, variances[0].Level);
             Assert.Equal(3, variances[0].Value1);
             Assert.Equal(2, variances[0].Value2);
-            Assert.Null(variances[0].ParentReference1);
-            Assert.Null(variances[0].ParentReference2);
+            Assert.Null(variances[0].ParentVariance);
         }
 
         [Fact]
@@ -199,8 +194,8 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
             Assert.NotEmpty(variances);
             Assert.Equal(1, variances.Count);
             Assert.Equal("Int1", variances[0].PropertyName);
-            Assert.Equal(c1, variances[0].ParentReference1);
-            Assert.Equal(c2, variances[0].ParentReference2);
+            Assert.Equal(c1, variances[0].ParentVariance.Value1);
+            Assert.Equal(c2, variances[0].ParentVariance.Value2);
             Assert.Equal(2, variances[0].Level);
             Assert.Equal(1, variances[0].Value1);
             Assert.Equal(2, variances[0].Value2);
@@ -229,8 +224,8 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
             Assert.NotEmpty(variances);
             Assert.Equal(1, variances.Count);
             Assert.Equal("String1 at index 1", variances[0].PropertyName);
-            Assert.Equal(c1, variances[0].ParentReference1);
-            Assert.Equal(c2, variances[0].ParentReference2);
+            Assert.Equal(c1, variances[0].ParentVariance.Value1);
+            Assert.Equal(c2, variances[0].ParentVariance.Value2);
             Assert.Equal(4, variances[0].Level);
             Assert.Equal('a', variances[0].Value1);
             Assert.Equal('e', variances[0].Value2);
@@ -282,8 +277,8 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
             Assert.NotEmpty(variances);
             Assert.Equal(1, variances.Count);
             Assert.Equal("String1", variances[0].PropertyName);
-            Assert.Equal(c1, variances[0].ParentReference1);
-            Assert.Equal(c2, variances[0].ParentReference2);
+            Assert.Equal(c1, variances[0].ParentVariance.Value1);
+            Assert.Equal(c2, variances[0].ParentVariance.Value2);
             Assert.Equal(3, variances[0].Level);
             Assert.Equal(null, variances[0].Value1);
             Assert.Equal("test", variances[0].Value2);
@@ -331,8 +326,8 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
             Assert.NotEmpty(variances);
             Assert.Equal(1, variances.Count);
             Assert.Equal("Ints.Count()", variances[0].PropertyName);
-            Assert.Equal(c1, variances[0].ParentReference1);
-            Assert.Equal(c2, variances[0].ParentReference2);
+            Assert.Equal(c1, variances[0].ParentVariance.Value1);
+            Assert.Equal(c2, variances[0].ParentVariance.Value2);
             Assert.Equal(3, variances[0].Level);
             Assert.Equal(new List<int> {1, 2, 3}, variances[0].Value1);
             Assert.Equal(Enumerable.Empty<int>(), variances[0].Value2);
@@ -389,8 +384,8 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
             Assert.NotEmpty(variances);
             Assert.Equal(1, variances.Count);
             Assert.Equal("Immutable1", variances[0].PropertyName);
-            Assert.Equal(c1, variances[0].ParentReference1);
-            Assert.Equal(c2, variances[0].ParentReference2);
+            Assert.Equal(c1, variances[0].ParentVariance.Value1);
+            Assert.Equal(c2, variances[0].ParentVariance.Value2);
             Assert.Equal(4, variances[0].Level);
             Assert.Equal(inner, variances[0].Value1);
             Assert.Equal(null, variances[0].Value2);
@@ -424,8 +419,8 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
             Assert.NotEmpty(variances);
             Assert.Equal(1, variances.Count);
             Assert.Equal("String1 at index 1", variances[0].PropertyName);
-            Assert.Equal(inner1, variances[0].ParentReference1);
-            Assert.Equal(inner2, variances[0].ParentReference2);
+            Assert.Equal(inner1, variances[0].ParentVariance.Value1);
+            Assert.Equal(inner2, variances[0].ParentVariance.Value2);
             Assert.Equal(7, variances[0].Level);
             Assert.Equal('e', variances[0].Value1);
             Assert.Equal('a', variances[0].Value2);

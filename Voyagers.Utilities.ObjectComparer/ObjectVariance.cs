@@ -2,28 +2,25 @@
 
 namespace Voyagers.Utilities.ObjectComparer
 {
-    public struct ObjectVariance : IEquatable<ObjectVariance>
+    public class ObjectVariance : IEquatable<ObjectVariance>
     {
         private readonly string _propertyName;
         private readonly object _value1;
         private readonly object _value2;
         private readonly int _level;
-        private readonly object _parentReference1;
-        private readonly object _parentReference2;
+        private readonly ObjectVariance _parentVariance;
 
         public ObjectVariance(string propertyName,
                               object value1,
                               object value2,
                               int level,
-                              object parentReference1,
-                              object parentReference2)
+                              ObjectVariance parentVariance)
         {
             _propertyName = propertyName;
             _value1 = value1;
             _value2 = value2;
             _level = level;
-            _parentReference1 = parentReference1;
-            _parentReference2 = parentReference2;
+            _parentVariance = parentVariance;
         }
 
         public string PropertyName
@@ -46,24 +43,26 @@ namespace Voyagers.Utilities.ObjectComparer
             get { return _level; }
         }
 
-        public object ParentReference1
+        public ObjectVariance ParentVariance
         {
-            get { return _parentReference1; }
+            get { return _parentVariance; }
         }
 
-        public object ParentReference2
+        public bool Equals(ObjectVariance other)
         {
-            get { return _parentReference2; }
-        }
+            if (ReferenceEquals(null, other))
+            {
+                return false;
+            }
 
-        public static bool operator ==(ObjectVariance left, ObjectVariance right)
-        {
-            return left.Equals(right);
-        }
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
 
-        public static bool operator !=(ObjectVariance left, ObjectVariance right)
-        {
-            return !left.Equals(right);
+            return String.Equals(_propertyName, other._propertyName) && Equals(_value1, other._value1) &&
+                   Equals(_value2, other._value2) && _level == other._level &&
+                   Equals(_parentVariance, other._parentVariance);
         }
 
         public override bool Equals(object obj)
@@ -72,15 +71,13 @@ namespace Voyagers.Utilities.ObjectComparer
             {
                 return false;
             }
-            return obj is ObjectVariance && Equals((ObjectVariance)obj);
-        }
 
-        public bool Equals(ObjectVariance other)
-        {
-            return string.Equals(_propertyName, other._propertyName) && Equals(_value1, other._value1) &&
-                   Equals(_value2, other._value2) && _level == other._level &&
-                   Equals(_parentReference1, other._parentReference1) &&
-                   Equals(_parentReference2, other._parentReference2);
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            return obj.GetType() == GetType() && Equals((ObjectVariance)obj);
         }
 
         public override int GetHashCode()
@@ -91,11 +88,19 @@ namespace Voyagers.Utilities.ObjectComparer
                 hashCode = (hashCode * 397) ^ (_value1 != null ? _value1.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (_value2 != null ? _value2.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ _level;
-                hashCode = (hashCode * 397) ^ (_parentReference1 != null ? _parentReference1.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (_parentReference2 != null ? _parentReference2.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_parentVariance != null ? _parentVariance.GetHashCode() : 0);
                 return hashCode;
             }
         }
 
+        public static bool operator ==(ObjectVariance left, ObjectVariance right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(ObjectVariance left, ObjectVariance right)
+        {
+            return !Equals(left, right);
+        }
     }
 }

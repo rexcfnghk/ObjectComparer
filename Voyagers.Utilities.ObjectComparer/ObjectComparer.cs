@@ -22,7 +22,7 @@ namespace Voyagers.Utilities.ObjectComparer
             }
 
             // In case one of the objects is null
-            IEnumerable<ObjectVariance> variances = CheckNullObjectsVariance(object1, object2, 1, null, null);
+            IEnumerable<ObjectVariance> variances = CheckNullObjectsVariance(object1, object2, 1);
             if (variances.Any())
             {
                 return variances;
@@ -30,7 +30,7 @@ namespace Voyagers.Utilities.ObjectComparer
 
             // ReSharper disable once PossibleNullReferenceException
             return object1.GetType() != object2.GetType()
-                       ? new ObjectVariance("value", object1, object2, 1, null, null).Yield()
+                       ? new ObjectVariance("value", object1, object2, 1, null).Yield()
                        : GetObjectVariances(object1, object2, 1, null, null);
         }
 
@@ -59,15 +59,14 @@ namespace Voyagers.Utilities.ObjectComparer
 
             // Null checks, subsituting objectVariance.PropertyName with propertyName if it is an inner level null check
             foreach (
-                ObjectVariance objectVariance in CheckNullObjectsVariance(object1, object2, level, parent1, parent2))
+                ObjectVariance objectVariance in CheckNullObjectsVariance(object1, object2, level))
             {
                 yield return
-                    new ObjectVariance(propertyName ?? objectVariance.PropertyName,
+                    new ObjectVariance(objectVariance.PropertyName,
                                        objectVariance.Value1,
                                        objectVariance.Value2,
                                        objectVariance.Level,
-                                       objectVariance.ParentReference1,
-                                       objectVariance.ParentReference2);
+                                       new ObjectVariance(propertyName, parent1, parent2, objectVariance.Level - 1, null));
                 yield break;
             }
 
@@ -84,7 +83,7 @@ namespace Voyagers.Utilities.ObjectComparer
             {
                 if (!object1.Equals(object2))
                 {
-                    yield return new ObjectVariance(propertyName ?? "value", object1, object2, level, parent1, parent2);
+                    yield return new ObjectVariance("value", object1, object2, level, new ObjectVariance(propertyName, parent1, parent2, level - 1, null));
                 }
             }
 
@@ -94,16 +93,15 @@ namespace Voyagers.Utilities.ObjectComparer
                 TryGetIEnumerableGenericArgument(object2Type, out object2GenericArgument) &&
                 object1GenericArgument == object2GenericArgument)
             {
-                var result = GetEnumerableVariances(object1, object2, level, parent1, parent2);
+                var result = GetEnumerableVariances(object1, object2, level, new ObjectVariance(propertyName, parent1, parent2, level - 1, null));
                 foreach (ObjectVariance objectVariance in result)
                 {
                     yield return
-                        new ObjectVariance(String.Format(objectVariance.PropertyName, propertyName ?? "IEnumerable"),
+                        new ObjectVariance(String.Format("IEnumerable<{0}>", object1GenericArgument),
                                            objectVariance.Value1,
                                            objectVariance.Value2,
                                            objectVariance.Level,
-                                           objectVariance.ParentReference1,
-                                           objectVariance.ParentReference2);
+                                           new ObjectVariance(propertyName, parent1, parent2, objectVariance.Level - 1, null));
                 }
 
                 // Required for more than one difference in inner IEnumerables
@@ -120,8 +118,7 @@ namespace Voyagers.Utilities.ObjectComparer
         private static IEnumerable<ObjectVariance> GetEnumerableVariances(IEnumerable object1,
                                                                           IEnumerable object2,
                                                                           int level,
-                                                                          object parent1,
-                                                                          object parent2)
+                                                                          ObjectVariance parentVariance)
         {
             // Boxing here, but we cannot determine what generic type argument the caller will pass
             List<object> value1List = object1.Cast<object>().ToList();
@@ -130,7 +127,7 @@ namespace Voyagers.Utilities.ObjectComparer
             // If the count of IEnumerable is not equal, the two IEnumerable are definitely unequal
             if (value1List.Count != value2List.Count)
             {
-                yield return new ObjectVariance("{0}.Count()", object1, object2, ++level, parent1, parent2);
+                yield return new ObjectVariance("{0}.Count()", object1, object2, ++level, parentVariance);
             }
 
             // Try to compare by position
@@ -141,15 +138,14 @@ namespace Voyagers.Utilities.ObjectComparer
                 {
                     foreach (
                         ObjectVariance diff in
-                            GetObjectVariances(value1List[i], value2List[i], level, parent1, parent2))
+                            GetObjectVariances(value1List[i], value2List[i], level, parentVariance.Value1, parentVariance.Value2))
                     {
                         yield return
                             new ObjectVariance("{0} at index " + i,
                                                diff.Value1,
                                                diff.Value2,
                                                diff.Level + 1,
-                                               diff.ParentReference1,
-                                               diff.ParentReference2);
+                                               diff.ParentVariance);
                     }
                 }
             }
@@ -204,20 +200,18 @@ namespace Voyagers.Utilities.ObjectComparer
 
         private static IEnumerable<ObjectVariance> CheckNullObjectsVariance(object object1,
                                                                             object object2,
-                                                                            int level,
-                                                                            object parent1,
-                                                                            object parent2)
+                                                                            int level)
         {
             // One of the objects is null
             if (ReferenceEquals(object1, null))
             {
-                yield return new ObjectVariance("value", null, object2, level, parent1, parent2);
+                yield return new ObjectVariance("value", null, object2, level, null);
                 yield break;
             }
 
             if (ReferenceEquals(object2, null))
             {
-                yield return new ObjectVariance("value", object1, null, level, parent1, parent2);
+                yield return new ObjectVariance("value", object1, null, level, null);
             }
         }
 
