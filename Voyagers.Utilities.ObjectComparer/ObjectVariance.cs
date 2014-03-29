@@ -2,23 +2,26 @@
 
 namespace Voyagers.Utilities.ObjectComparer
 {
+    /// <summary>
+    /// ObjectVariance that takes the form of <c>Object1.PropertyName != Object2.PropertyName</c>
+    /// </summary>
     public class ObjectVariance : IEquatable<ObjectVariance>
     {
         private readonly string _propertyName;
-        private readonly object _value1;
-        private readonly object _value2;
+        private readonly object _propertyValue1;
+        private readonly object _propertyValue2;
         private readonly int _level;
         private readonly ObjectVariance _parentVariance;
 
         public ObjectVariance(string propertyName,
-                              object value1,
-                              object value2,
+                              object propertyValue1,
+                              object propertyValue2,
                               int level,
                               ObjectVariance parentVariance)
         {
             _propertyName = propertyName;
-            _value1 = value1;
-            _value2 = value2;
+            _propertyValue1 = propertyValue1;
+            _propertyValue2 = propertyValue2;
             _level = level;
             _parentVariance = parentVariance;
         }
@@ -28,14 +31,14 @@ namespace Voyagers.Utilities.ObjectComparer
             get { return _propertyName; }
         }
 
-        public object Value1
+        public object PropertyValue1
         {
-            get { return _value1; }
+            get { return _propertyValue1; }
         }
 
-        public object Value2
+        public object PropertyValue2
         {
-            get { return _value2; }
+            get { return _propertyValue2; }
         }
 
         public int Level
@@ -60,8 +63,8 @@ namespace Voyagers.Utilities.ObjectComparer
                 return true;
             }
 
-            return String.Equals(_propertyName, other._propertyName) && Equals(_value1, other._value1) &&
-                   Equals(_value2, other._value2) && _level == other._level &&
+            return String.Equals(_propertyName, other._propertyName) && Equals(_propertyValue1, other._propertyValue1) &&
+                   Equals(_propertyValue2, other._propertyValue2) && _level == other._level &&
                    Equals(_parentVariance, other._parentVariance);
         }
 
@@ -85,8 +88,8 @@ namespace Voyagers.Utilities.ObjectComparer
             unchecked
             {
                 int hashCode = (_propertyName != null ? _propertyName.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (_value1 != null ? _value1.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (_value2 != null ? _value2.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_propertyValue1 != null ? _propertyValue1.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_propertyValue2 != null ? _propertyValue2.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ _level;
                 hashCode = (hashCode * 397) ^ (_parentVariance != null ? _parentVariance.GetHashCode() : 0);
                 return hashCode;
