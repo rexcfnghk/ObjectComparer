@@ -33,3 +33,4 @@ Sample
       - `PropertyName`: `null`
       - `Value1`: `"test"`
       - `Value2`: `"tast"`
+      - `ParentVariance`: `null`
