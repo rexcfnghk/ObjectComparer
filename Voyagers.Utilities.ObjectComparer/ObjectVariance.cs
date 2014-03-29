@@ -10,19 +10,16 @@ namespace Voyagers.Utilities.ObjectComparer
         private readonly string _propertyName;
         private readonly object _propertyValue1;
         private readonly object _propertyValue2;
-        private readonly int _level;
         private readonly ObjectVariance _parentVariance;
 
         public ObjectVariance(string propertyName,
                               object propertyValue1,
                               object propertyValue2,
-                              int level,
                               ObjectVariance parentVariance)
         {
             _propertyName = propertyName;
             _propertyValue1 = propertyValue1;
             _propertyValue2 = propertyValue2;
-            _level = level;
             _parentVariance = parentVariance;
         }
 
@@ -39,11 +36,6 @@ namespace Voyagers.Utilities.ObjectComparer
         public object PropertyValue2
         {
             get { return _propertyValue2; }
-        }
-
-        public int Level
-        {
-            get { return _level; }
         }
 
         public ObjectVariance ParentVariance
@@ -64,7 +56,7 @@ namespace Voyagers.Utilities.ObjectComparer
             }
 
             return String.Equals(_propertyName, other._propertyName) && Equals(_propertyValue1, other._propertyValue1) &&
-                   Equals(_propertyValue2, other._propertyValue2) && _level == other._level &&
+                   Equals(_propertyValue2, other._propertyValue2) &&
                    Equals(_parentVariance, other._parentVariance);
         }
 
@@ -90,7 +82,6 @@ namespace Voyagers.Utilities.ObjectComparer
                 int hashCode = (_propertyName != null ? _propertyName.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (_propertyValue1 != null ? _propertyValue1.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (_propertyValue2 != null ? _propertyValue2.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ _level;
                 hashCode = (hashCode * 397) ^ (_parentVariance != null ? _parentVariance.GetHashCode() : 0);
                 return hashCode;
             }
