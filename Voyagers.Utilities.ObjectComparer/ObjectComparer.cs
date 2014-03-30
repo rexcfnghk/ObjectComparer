@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 
@@ -8,25 +9,26 @@ namespace Voyagers.Utilities.ObjectComparer
 {
     public static class ObjectComparer
     {
-        private static readonly Dictionary<Type, string> _aliases = new Dictionary<Type, string>
-        {
-            { typeof(byte), "byte" },
-            { typeof(sbyte), "sbyte" },
-            { typeof(short), "short" },
-            { typeof(ushort), "ushort" },
-            { typeof(int), "int" },
-            { typeof(uint), "uint" },
-            { typeof(long), "long" },
-            { typeof(ulong), "ulong" },
-            { typeof(float), "float" },
-            { typeof(double), "double" },
-            { typeof(decimal), "decimal" },
-            { typeof(object), "object" },
-            { typeof(bool), "bool" },
-            { typeof(char), "char" },
-            { typeof(string), "string" },
-            { typeof(void), "void" }
-        };
+        private static readonly IDictionary<Type, string> _aliases =
+            new ReadOnlyDictionary<Type, string>(new Dictionary<Type, string>
+            {
+                { typeof(byte), "byte" },
+                { typeof(sbyte), "sbyte" },
+                { typeof(short), "short" },
+                { typeof(ushort), "ushort" },
+                { typeof(int), "int" },
+                { typeof(uint), "uint" },
+                { typeof(long), "long" },
+                { typeof(ulong), "ulong" },
+                { typeof(float), "float" },
+                { typeof(double), "double" },
+                { typeof(decimal), "decimal" },
+                { typeof(object), "object" },
+                { typeof(bool), "bool" },
+                { typeof(char), "char" },
+                { typeof(string), "string" },
+                { typeof(void), "void" }
+            });
 
         /// <summary>
         ///  Return object variances between two dynamic objects, serves as an entry point to all comparisons
@@ -102,14 +104,14 @@ namespace Voyagers.Utilities.ObjectComparer
             // there are two possibilities:
             // 1. object1 & object2 are properties to other types which can be further traversed
             // 2. object1 & object2 are top level objects
-            if (object1Type.IsPrimitive && object2Type.IsPrimitive /* && object1 is string && object2 is string */)
+            if ((object1Type.IsPrimitive && object2Type.IsPrimitive) || (object1 is string && object2 is string))
             {
                 if (object1.Equals(object2))
                 {
                     yield break;
                 }
 
-                yield return new ObjectVariance(propertyName ?? "value", object1, object2, parentVariance);
+                yield return new ObjectVariance(propertyName, object1, object2, parentVariance);
                 yield break;
             }
 

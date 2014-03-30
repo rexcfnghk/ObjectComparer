@@ -43,22 +43,16 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
             Assert.Equal(c2, variances[0].ParentVariance.PropertyValue2);
 
             // Second variance
-            Assert.Equal("IEnumerable<char> String1 at index 1", variances[1].PropertyName);
-            Assert.Equal('a', variances[1].PropertyValue1);
-            Assert.Equal('e', variances[1].PropertyValue2);
+            Assert.Equal("String1", variances[1].PropertyName);
+            Assert.Equal("Tast", variances[1].PropertyValue1);
+            Assert.Equal("Test", variances[1].PropertyValue2);
 
             // Second's parent
             Assert.NotNull(variances[1].ParentVariance);
-            Assert.Equal("String1", variances[1].ParentVariance.PropertyName);
-            Assert.Equal("Tast", variances[1].ParentVariance.PropertyValue1);
-            Assert.Equal("Test", variances[1].ParentVariance.PropertyValue2);
-
-            // Second's parent's parent
-            Assert.NotNull(variances[1].ParentVariance.ParentVariance);
-            Assert.Null(variances[1].ParentVariance.ParentVariance.PropertyName);
-            Assert.Equal(c1, variances[1].ParentVariance.ParentVariance.PropertyValue1);
-            Assert.Equal(c2, variances[1].ParentVariance.ParentVariance.PropertyValue2);
-            Assert.Null(variances[1].ParentVariance.ParentVariance.ParentVariance);
+            Assert.Null(variances[1].ParentVariance.PropertyName);
+            Assert.Equal(c1, variances[1].ParentVariance.PropertyValue1);
+            Assert.Equal(c2, variances[1].ParentVariance.PropertyValue2);
+            Assert.Null(variances[1].ParentVariance.ParentVariance);
         }
 
         [Fact]
