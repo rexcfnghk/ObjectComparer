@@ -130,7 +130,9 @@ namespace Voyagers.Utilities.ObjectComparer
                     _aliases.TryGetValue(object1GenericArgument, out genericAlias);
                     yield return
                         new ObjectVariance(
-                            String.Format("IEnumerable<{0}> " + objectVariance.PropertyName, genericAlias, propertyName)
+                            String.Format("IEnumerable<{0}> " + objectVariance.PropertyName,
+                                          genericAlias ?? object1GenericArgument.Name,
+                                          propertyName)
                                   .TrimExtraSpacesBetweenWords(),
                             objectVariance.PropertyValue1,
                             objectVariance.PropertyValue2,
