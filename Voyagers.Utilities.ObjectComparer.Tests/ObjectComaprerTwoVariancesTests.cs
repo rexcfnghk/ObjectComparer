@@ -110,6 +110,54 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
         }
 
         [Fact]
+        public void PrimitivesHolderWithTwoDifferentStringsShouldReturnVariances()
+        {
+            // Arrange
+            var l1 = new List<string> { "tast", "test" };
+            var l2 = new List<string> { "t1st", "test" };
+            var c1 = new PrimitivesHolder
+            {
+                Strings = l1
+            };
+
+            var c2 = new PrimitivesHolder
+            {
+                Strings = l2
+            };
+
+            // Act
+            List<ObjectVariance> variances = ObjectComparer.GetObjectVariances(c1, c2).ToList();
+
+            // Assert
+            Assert.NotEmpty(variances);
+            Assert.Equal(1, variances.Count);
+
+            // First variance
+            Assert.Equal('a', variances[0].PropertyValue1);
+            Assert.Equal('1', variances[0].PropertyValue2);
+            Assert.Equal("IEnumerable<char> at index 1", variances[0].PropertyName);
+
+            // First variance's parent
+            Assert.NotNull(variances[0].ParentVariance);
+            Assert.Equal("tast", variances[0].ParentVariance.PropertyValue1);
+            Assert.Equal("t1st", variances[0].ParentVariance.PropertyValue2);
+            Assert.Equal("IEnumerable<string> Strings at index 0", variances[0].ParentVariance.PropertyName);
+
+            // First variance's parent's parent
+            Assert.NotNull(variances[0].ParentVariance.ParentVariance);
+            Assert.Equal(l1, variances[0].ParentVariance.ParentVariance.PropertyValue1);
+            Assert.Equal(l2, variances[0].ParentVariance.ParentVariance.PropertyValue2);
+            Assert.Equal("Strings", variances[0].ParentVariance.ParentVariance.PropertyName);
+
+            // First variance's parent's parent
+            Assert.NotNull(variances[0].ParentVariance.ParentVariance.ParentVariance);
+            Assert.Equal(c1, variances[0].ParentVariance.ParentVariance.ParentVariance.PropertyValue1);
+            Assert.Equal(c2, variances[0].ParentVariance.ParentVariance.ParentVariance.PropertyValue2);
+            Assert.Null(variances[0].ParentVariance.ParentVariance.ParentVariance.PropertyName);
+            Assert.Null(variances[0].ParentVariance.ParentVariance.ParentVariance.ParentVariance);
+        }
+
+        [Fact]
         public void CollectionClassWithTwoDifferencesShouldReturnTwoVariances()
         {
             // Arrange

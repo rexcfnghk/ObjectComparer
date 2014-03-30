@@ -179,7 +179,11 @@ namespace Voyagers.Utilities.ObjectComparer
                         new ObjectVariance("{1} at index " + i,
                                            diff.PropertyValue1,
                                            diff.PropertyValue2,
-                                           parentVariance);
+                                           diff.ParentVariance);
+                    /********* TEST CODE ***********/
+                    // Required for stopping to enumerate after first difference in IEnumerables
+                    // yield break;
+                    /********* TEST CODE ***********/
                 }
             }
         }
