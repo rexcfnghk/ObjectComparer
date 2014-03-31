@@ -145,9 +145,17 @@ namespace Voyagers.Utilities.ObjectComparer
                 yield break;
             }
 
+            /*** TEST CODE ***/
+            parentVariance = new ObjectVariance(propertyName, object1, object2, parentVariance);
+            /*** TEST CODE ***/
             foreach (
                 ObjectVariance objectVariance in GetVariancesFromProperties(object1, object2, parentVariance))
             {
+                //yield return
+                //    new ObjectVariance(propertyName,
+                //                       objectVariance.PropertyValue1,
+                //                       objectVariance.PropertyValue2,
+                //                       objectVariance.ParentVariance);
                 yield return objectVariance;
             }
         }
@@ -281,13 +289,13 @@ namespace Voyagers.Utilities.ObjectComparer
                 {
                     // Tried return GetObjectVariances(propertyInfo1Enumerator.Current, propertyInfo2Enumerator.Current,
                     // ++level, object1, object2). Does not work
-                    var testParentVariance = new ObjectVariance(parentVariance != null ? parentVariance.PropertyName : null,
-                                                                object1,
-                                                                object2,
-                                                                parentVariance);
+                    //var testParentVariance = new ObjectVariance(parentVariance != null ? parentVariance.PropertyName : null,
+                    //                                            object1,
+                    //                                            object2,
+                    //                                            parentVariance);
                     foreach (ObjectVariance diff in GetObjectVariances(propertyInfo1Enumerator.Current,
                                                                        propertyInfo2Enumerator.Current,
-                                                                       testParentVariance))
+                                                                       parentVariance))
                     {
                         yield return diff;
                     }
