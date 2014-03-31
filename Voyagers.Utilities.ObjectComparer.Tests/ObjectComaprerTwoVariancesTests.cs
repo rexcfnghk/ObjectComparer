@@ -129,7 +129,7 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
             // First variance
             Assert.Equal("tast", variances[0].PropertyValue1);
             Assert.Equal("t1st", variances[0].PropertyValue2);
-            Assert.Equal("IEnumerable<string> Strings at index 0", variances[0].PropertyName);
+            Assert.Equal("this[0]", variances[0].PropertyName);
 
             // First variance's parent's parent
             Assert.NotNull(variances[0].ParentVariance);
@@ -151,20 +151,16 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
             // Arrange
             var inner1 = new ImmutableClass(1, "tast");
             var inner2 = new ImmutableClass(2, "test");
+            var list1 = new List<ImmutableClass> { inner1 };
+            var list2 = new List<ImmutableClass> { inner2 };
             var c1 = new CollectionClass
             {
-                ImmutableClasses = new List<ImmutableClass>
-                {
-                    inner1
-                }
+                ImmutableClasses = list1
             };
 
             var c2 = new CollectionClass
             {
-                ImmutableClasses = new List<ImmutableClass>
-                {
-                    inner2
-                }
+                ImmutableClasses = list2
             };
 
             // Act
@@ -181,15 +177,21 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
 
             // First variance's parent
             Assert.NotNull(variances[0].ParentVariance);
-            Assert.Equal("IEnumerable<ImmutableClass> ImmutableClasses at index 0", variances[0].ParentVariance.PropertyName);
+            Assert.Equal("this[0]", variances[0].ParentVariance.PropertyName);
             Assert.Equal(inner1, variances[0].ParentVariance.PropertyValue1);
             Assert.Equal(inner2, variances[0].ParentVariance.PropertyValue2);
 
             // First variance's parent's parent
             Assert.NotNull(variances[0].ParentVariance.ParentVariance);
-            Assert.Null(variances[0].ParentVariance.ParentVariance.PropertyName);
-            Assert.Equal(c1, variances[0].ParentVariance.ParentVariance.PropertyValue1);
-            Assert.Equal(c2, variances[0].ParentVariance.ParentVariance.PropertyValue2);
+            Assert.Equal("ImmutableClasses", variances[0].ParentVariance.ParentVariance.PropertyName);
+            Assert.Equal(list1, variances[0].ParentVariance.ParentVariance.PropertyValue1);
+            Assert.Equal(list2, variances[0].ParentVariance.ParentVariance.PropertyValue2);
+
+            // First variance's parent's parent's parent
+            Assert.NotNull(variances[0].ParentVariance.ParentVariance.ParentVariance);
+            Assert.Null(variances[0].ParentVariance.ParentVariance.ParentVariance.PropertyName);
+            Assert.Equal(c1, variances[0].ParentVariance.ParentVariance.ParentVariance.PropertyValue1);
+            Assert.Equal(c2, variances[0].ParentVariance.ParentVariance.ParentVariance.PropertyValue2);
 
             // Second variance
             Assert.Equal("String1", variances[1].PropertyName);
@@ -198,15 +200,22 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
 
             // Second variance's parent
             Assert.NotNull(variances[1].ParentVariance);
-            Assert.Equal("IEnumerable<ImmutableClass> ImmutableClasses at index 0", variances[1].ParentVariance.PropertyName);
+            Assert.Equal("this[0]", variances[1].ParentVariance.PropertyName);
             Assert.Equal(inner1, variances[1].ParentVariance.PropertyValue1);
             Assert.Equal(inner2, variances[1].ParentVariance.PropertyValue2);
 
-            // Second variance's parent's parent
+            // First variance's parent's parent
             Assert.NotNull(variances[1].ParentVariance.ParentVariance);
-            Assert.Null(variances[1].ParentVariance.ParentVariance.PropertyName);
-            Assert.Equal(c1, variances[1].ParentVariance.ParentVariance.PropertyValue1);
-            Assert.Equal(c2, variances[1].ParentVariance.ParentVariance.PropertyValue2);
+            Assert.Equal("ImmutableClasses", variances[1].ParentVariance.ParentVariance.PropertyName);
+            Assert.Equal(list1, variances[1].ParentVariance.ParentVariance.PropertyValue1);
+            Assert.Equal(list2, variances[1].ParentVariance.ParentVariance.PropertyValue2);
+
+            // Second variance's parent's parent's parent
+            Assert.NotNull(variances[1].ParentVariance.ParentVariance.ParentVariance);
+            Assert.Null(variances[1].ParentVariance.ParentVariance.ParentVariance.PropertyName);
+            Assert.Equal(c1, variances[1].ParentVariance.ParentVariance.ParentVariance.PropertyValue1);
+            Assert.Equal(c2, variances[1].ParentVariance.ParentVariance.ParentVariance.PropertyValue2);
+            Assert.Null(variances[1].ParentVariance.ParentVariance.ParentVariance.ParentVariance);
         }
     }
 }

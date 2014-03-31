@@ -105,7 +105,6 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
 
             // Assert
             Assert.NotEmpty(variances);
-            Assert.NotNull(variances[0]);
             Assert.Equal("test", variances[0].PropertyValue1);
             Assert.Equal("tast", variances[0].PropertyValue2);
             Assert.Null(variances[0].PropertyName);
@@ -139,7 +138,7 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
             // Assert
             Assert.NotEmpty(variances);
             Assert.Equal(1, variances.Count);
-            Assert.Equal("IEnumerable<int> at index 2", variances[0].PropertyName);
+            Assert.Equal("this[2]", variances[0].PropertyName);
             Assert.Equal(3, variances[0].PropertyValue1);
             Assert.Equal(2, variances[0].PropertyValue2);
 
@@ -351,7 +350,7 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
             // Assert
             Assert.NotEmpty(variances);
             Assert.Equal(1, variances.Count);
-            Assert.Equal("IEnumerable<int> Ints.Count()", variances[0].PropertyName);
+            Assert.Equal("Ints.Count()", variances[0].PropertyName);
             Assert.Equal(3, variances[0].PropertyValue1);
             Assert.Equal(0, variances[0].PropertyValue2);
 

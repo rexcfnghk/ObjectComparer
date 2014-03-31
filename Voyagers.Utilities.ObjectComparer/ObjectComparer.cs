@@ -111,12 +111,22 @@ namespace Voyagers.Utilities.ObjectComparer
                     yield break;
                 }
 
-                yield return new ObjectVariance(propertyName, object1, object2, parentVariance);
+                // parentVariance == null means primitives are being passed to compare
+                // propertyName != null means deepest level reached within the object graph
+                yield return
+                    propertyName != null || parentVariance == null
+                        ? new ObjectVariance(propertyName, object1, object2, parentVariance)
+                        : parentVariance;
                 yield break;
             }
 
             /*** TEST CODE ***/
-            parentVariance = new ObjectVariance(propertyName, object1, object2, parentVariance);
+            // parentVariance == null menas primitives are being passed passed to compare
+            // propertyName != null means deepest level reached within the object graph
+            if (propertyName != null || parentVariance == null)
+            {
+                parentVariance = new ObjectVariance(propertyName, object1, object2, parentVariance);
+            }
             /*** TEST CODE ***/
             // For both objects implementing IEnumerable<T>
             Type object1GenericArgument, object2GenericArgument;
@@ -124,22 +134,22 @@ namespace Voyagers.Utilities.ObjectComparer
                 TryGetIEnumerableGenericArgument(object2Type, out object2GenericArgument) &&
                 object1GenericArgument == object2GenericArgument)
             {
+                string genericAlias;
+                _aliases.TryGetValue(object1GenericArgument, out genericAlias);
+                //parentVariance =
+                //    new ObjectVariance(
+                //        propertyName,
+                //        object1,
+                //        object2,
+                //        parentVariance.ParentVariance);
+
                 IEnumerable<ObjectVariance> result = GetEnumerableVariances(object1,
                                                                             object2,
                                                                             parentVariance);
                 foreach (ObjectVariance objectVariance in result)
                 {
-                    string genericAlias;
-                    _aliases.TryGetValue(object1GenericArgument, out genericAlias);
-                    yield return
-                        new ObjectVariance(
-                            String.Format("IEnumerable<{0}> " + objectVariance.PropertyName,
-                                          genericAlias ?? object1GenericArgument.Name,
-                                          propertyName)
-                                  .TrimExtraSpacesBetweenWords(),
-                            objectVariance.PropertyValue1,
-                            objectVariance.PropertyValue2,
-                            objectVariance.ParentVariance);
+
+                    yield return objectVariance;
                 }
 
                 // Required for more than one difference in inner IEnumerables
@@ -169,7 +179,12 @@ namespace Voyagers.Utilities.ObjectComparer
             // If the count of IEnumerable is not equal, the two IEnumerable are definitely unequal
             if (value1List.Count != value2List.Count)
             {
-                yield return new ObjectVariance("{1}.Count()", value1List.Count, value2List.Count, parentVariance);
+                yield return
+                    new ObjectVariance(
+                        String.Format("{0}.Count()", parentVariance != null ? parentVariance.PropertyName : "this"),
+                        value1List.Count,
+                        value2List.Count,
+                        parentVariance);
 
                 // Yield break here as there is no reason to compare since their count is different
                 yield break;
@@ -179,15 +194,19 @@ namespace Voyagers.Utilities.ObjectComparer
             // TODO: Continue comparing even if Count is not equal / Use KeyAttribute in comparing
             for (int i = 0; i < value1List.Count; i++)
             {
-                foreach (
-                    ObjectVariance diff in
-                        GetObjectVariances(value1List[i], value2List[i], parentVariance))
+                // As a test variance for each element in the IEnumerable
+                var testParentVariance = new ObjectVariance(String.Format("this[{0}]", i),
+                                                    value1List[i],
+                                                    value2List[i],
+                                                    parentVariance);
+                foreach (ObjectVariance diff in GetObjectVariances(value1List[i], value2List[i], testParentVariance))
                 {
-                    yield return
-                        new ObjectVariance("{1} at index " + i,
-                                           diff.PropertyValue1,
-                                           diff.PropertyValue2,
-                                           diff.ParentVariance);
+                    //yield return
+                    //    new ObjectVariance(diff.PropertyName + " at index " + i,
+                    //                       diff.PropertyValue1,
+                    //                       diff.PropertyValue2,
+                    //                       diff.ParentVariance);
+                    yield return diff;
                     /********* TEST CODE ***********/
                     // Required for stopping to enumerate after first difference in IEnumerables
                     // yield break;
