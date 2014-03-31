@@ -115,6 +115,10 @@ namespace Voyagers.Utilities.ObjectComparer
                 yield break;
             }
 
+
+            /*** TEST CODE ***/
+            parentVariance = new ObjectVariance(propertyName, object1, object2, parentVariance);
+            /*** TEST CODE ***/
             // For both objects implementing IEnumerable<T>
             Type object1GenericArgument, object2GenericArgument;
             if (TryGetIEnumerableGenericArgument(object1Type, out object1GenericArgument) &&
@@ -123,7 +127,6 @@ namespace Voyagers.Utilities.ObjectComparer
             {
                 string genericAlias;
                 _aliases.TryGetValue(object1GenericArgument, out genericAlias);
-                parentVariance = new ObjectVariance(propertyName, object1, object2, parentVariance);
                 IEnumerable<ObjectVariance> result = GetEnumerableVariances(object1,
                                                                             object2,
                                                                             parentVariance);
@@ -145,9 +148,6 @@ namespace Voyagers.Utilities.ObjectComparer
                 yield break;
             }
 
-            /*** TEST CODE ***/
-            parentVariance = new ObjectVariance(propertyName, object1, object2, parentVariance);
-            /*** TEST CODE ***/
             foreach (
                 ObjectVariance objectVariance in GetVariancesFromProperties(object1, object2, parentVariance))
             {
