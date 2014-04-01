@@ -5,33 +5,11 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 
 namespace Voyagers.Utilities.ObjectComparer
 {
     public static class ObjectComparer
     {
-        private static readonly IDictionary<Type, string> _aliases =
-            new ReadOnlyDictionary<Type, string>(new Dictionary<Type, string>
-            {
-                { typeof(byte), "byte" },
-                { typeof(sbyte), "sbyte" },
-                { typeof(short), "short" },
-                { typeof(ushort), "ushort" },
-                { typeof(int), "int" },
-                { typeof(uint), "uint" },
-                { typeof(long), "long" },
-                { typeof(ulong), "ulong" },
-                { typeof(float), "float" },
-                { typeof(double), "double" },
-                { typeof(decimal), "decimal" },
-                { typeof(object), "object" },
-                { typeof(bool), "bool" },
-                { typeof(char), "char" },
-                { typeof(string), "string" },
-                { typeof(void), "void" }
-            });
-
         /// <summary>
         ///  Return object variances between two dynamic objects, serves as an entry point to all comparisons
         /// </summary>
@@ -135,14 +113,11 @@ namespace Voyagers.Utilities.ObjectComparer
                 TryGetIEnumerableGenericArgument(object2Type, out object2GenericArgument) &&
                 object1GenericArgument == object2GenericArgument)
             {
-                string genericAlias;
-                _aliases.TryGetValue(object1GenericArgument, out genericAlias);
                 IEnumerable<ObjectVariance> result = GetEnumerableVariances(object1,
                                                                             object2,
                                                                             parentVariance);
                 foreach (ObjectVariance objectVariance in result)
                 {
-
                     yield return objectVariance;
                 }
 
@@ -150,6 +125,7 @@ namespace Voyagers.Utilities.ObjectComparer
                 yield break;
             }
 
+            // Compare by property
             foreach (
                 ObjectVariance objectVariance in GetVariancesFromProperties(object1, object2, parentVariance))
             {
@@ -185,12 +161,12 @@ namespace Voyagers.Utilities.ObjectComparer
             {
                 // As a test variance for each element in the IEnumerable
                 var testParentVariance = new ObjectVariance(String.Format("this[{0}]", i),
-                                                    value1List[i],
-                                                    value2List[i],
-                                                    parentVariance);
-                foreach (ObjectVariance diff in GetObjectVariances(value1List[i], value2List[i], testParentVariance))
+                                                            value1List[i],
+                                                            value2List[i],
+                                                            parentVariance);
+                foreach (ObjectVariance objectVariance in GetObjectVariances(value1List[i], value2List[i], testParentVariance))
                 {
-                    yield return diff;
+                    yield return objectVariance;
                 }
             }
         }
@@ -308,11 +284,11 @@ namespace Voyagers.Utilities.ObjectComparer
             {
                 while (propertyInfo1Enumerator.MoveNext() && propertyInfo2Enumerator.MoveNext())
                 {
-                    foreach (ObjectVariance diff in GetObjectVariances(propertyInfo1Enumerator.Current,
-                                                                       propertyInfo2Enumerator.Current,
-                                                                       parentVariance))
+                    foreach (ObjectVariance objectVariance in GetObjectVariances(propertyInfo1Enumerator.Current,
+                                                                                 propertyInfo2Enumerator.Current,
+                                                                                 parentVariance))
                     {
-                        yield return diff;
+                        yield return objectVariance;
                     }
                 }
             }

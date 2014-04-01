@@ -7,5 +7,7 @@ namespace Voyagers.Utilities.ObjectComparer.Tests.TestClasses
         public IEnumerable<int> Ints { get; set; }
 
         public IEnumerable<ImmutableClass> ImmutableClasses { get; set; }
+
+        public IEnumerable<User> Users { get; set; } 
     }
 }
