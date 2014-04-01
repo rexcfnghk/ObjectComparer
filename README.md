@@ -26,11 +26,7 @@ Sample
 `ObjectComparer.GetObjectVariances("test", "tast")` returns the following:
 - `IEnumerable<ObjectVariance>`
   - `this[0]`
-    - `PropertyName`: `"IEnumerable<char> at index 1"`
-    - `Value1`: `'e'`
-    - `Value2`: `'a'`
-    - `ParentVariance`:
-      - `PropertyName`: `null`
-      - `Value1`: `"test"`
-      - `Value2`: `"tast"`
-      - `ParentVariance`: `null`
+    - `PropertyName`: `null`
+    - `Value1`: `"test"`
+    - `Value2`: `"tast"`
+    - `ParentVariance`: `null`

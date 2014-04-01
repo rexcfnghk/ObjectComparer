@@ -2,8 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace Voyagers.Utilities.ObjectComparer
 {
@@ -219,6 +221,39 @@ namespace Voyagers.Utilities.ObjectComparer
         }
 
         /// <summary>
+        /// Returns true if any members of<param name="type">type</param> contain the KeyAttribute
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="propertyInfos">out parameter of PropertyInfos containing all properties with KeyAttribute</param>
+        /// <returns></returns>
+        internal static bool TryGetKeyAttriubte(Type type, out IEnumerable<PropertyInfo> propertyInfos)
+        {
+            if (type == null)
+            {
+                throw new ArgumentNullException("type");
+            }
+
+            if (Attribute.GetCustomAttributes(type, typeof(KeyAttribute)).Count() > 1)
+            {
+                throw new ArgumentException("Type cannot contain more than one KeyAttribute", "type");
+            }
+
+            propertyInfos = from prop in GetPropertyInfos(type)
+                            let attributes = Attribute.GetCustomAttributes(prop)
+                            where attributes.OfType<KeyAttribute>().Any()
+                            select prop;
+            return propertyInfos.Any();
+        }
+
+        internal static IEnumerable<PropertyInfo> GetPropertyInfos(Type type)
+        {
+            // Skip indexers using p.GetIndexParameters().Length == 0
+            return
+                type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                    .Where(p => p.CanRead && p.GetIndexParameters().Length == 0);
+        }
+
+        /// <summary>
         /// Convert item of type <typeparam name="T">T</typeparam> to IEnumerable&lt;<typeparam name="T">T</typeparam>&gt;
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -265,17 +300,8 @@ namespace Voyagers.Utilities.ObjectComparer
                 throw new ArgumentNullException("object2");
             }
 
-            // Skip indexers using p.GetIndexParameters().Length == 0
-            IEnumerable<PropertyInfo> object1PropertyInfos =
-                object1.GetType()
-                       .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                       .Where(p => p.CanRead && p.GetIndexParameters().Length == 0)
-                       .ToList();
-            IEnumerable<PropertyInfo> object2PropertyInfos =
-                object2.GetType()
-                       .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                       .Where(p => p.CanRead && p.GetIndexParameters().Length == 0)
-                       .ToList();
+            IEnumerable<PropertyInfo> object1PropertyInfos = GetPropertyInfos(object1.GetType());
+            IEnumerable<PropertyInfo> object2PropertyInfos = GetPropertyInfos(object2.GetType());
 
             using (IEnumerator<PropertyInfo> propertyInfo1Enumerator = object1PropertyInfos.GetEnumerator(),
                                              propertyInfo2Enumerator = object2PropertyInfos.GetEnumerator())
