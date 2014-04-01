@@ -55,13 +55,29 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
             IEnumerable<PropertyInfo> propertyInfos;
 
             // Act
-            ObjectComparer.TryGetKeyAttriubte(typeof(User), out propertyInfos);
+            bool result = ObjectComparer.TryGetKeyAttriubte(typeof(User), out propertyInfos);
 
             // Assert
+            Assert.True(result);
             var infos = propertyInfos as IList<PropertyInfo> ?? propertyInfos.ToList();
             Assert.NotEmpty(infos);
             Assert.Equal(1, infos.Count());
             Assert.Equal("Id", infos[0].Name);
+        }
+
+        [Fact]
+        public void ImmutableClassDoesNotContainKeyAttriubteCanBeDetected()
+        {
+            // Arrange
+            IEnumerable<PropertyInfo> propertyInfos;
+
+            // Act
+            bool result = ObjectComparer.TryGetKeyAttriubte(typeof(ImmutableClass), out propertyInfos);
+
+            // Assert
+            Assert.False(result);
+            var infos = propertyInfos as IList<PropertyInfo> ?? propertyInfos.ToList();
+            Assert.Empty(infos);
         }
 
         [Fact]
@@ -71,9 +87,10 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
             IEnumerable<PropertyInfo> propertyInfos;
 
             // Act
-            ObjectComparer.TryGetKeyAttriubte(typeof(ClassWithTwoKeys), out propertyInfos);
+            bool result = ObjectComparer.TryGetKeyAttriubte(typeof(ClassWithTwoKeys), out propertyInfos);
 
             // Assert
+            Assert.True(result);
             var infos = propertyInfos as IList<PropertyInfo> ?? propertyInfos.ToList();
             Assert.NotEmpty(infos);
             Assert.Equal(2, infos.Count());

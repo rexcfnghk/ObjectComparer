@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
@@ -113,9 +112,15 @@ namespace Voyagers.Utilities.ObjectComparer
                 TryGetIEnumerableGenericArgument(object2Type, out object2GenericArgument) &&
                 object1GenericArgument == object2GenericArgument)
             {
-                IEnumerable<ObjectVariance> result = GetEnumerableVariances(object1,
-                                                                            object2,
-                                                                            parentVariance);
+                IEnumerable<PropertyInfo> propertyInfos;
+                IEnumerable<ObjectVariance> result = TryGetKeyAttriubte(object1GenericArgument, out propertyInfos)
+                                                         ? GetEnumerableVariancesByKey(object1,
+                                                                                       object2,
+                                                                                       propertyInfos,
+                                                                                       parentVariance)
+                                                         : GetEnumerableVariancesByPosition(object1,
+                                                                                            object2,
+                                                                                            parentVariance);
                 foreach (ObjectVariance objectVariance in result)
                 {
                     yield return objectVariance;
@@ -133,9 +138,40 @@ namespace Voyagers.Utilities.ObjectComparer
             }
         }
 
-        private static IEnumerable<ObjectVariance> GetEnumerableVariances(IEnumerable object1,
-                                                                          IEnumerable object2,
-                                                                          ObjectVariance parentVariance)
+        private static IEnumerable<ObjectVariance> GetEnumerableVariancesByKey(IEnumerable enumerable1,
+                                                                               IEnumerable enumerable2,
+                                                                               IEnumerable<PropertyInfo> propertyInfos,
+                                                                               ObjectVariance parentVariance)
+        {
+            // Boxing here, but we cannot determine what generic type argument the caller will pass
+            List<object> list1 = enumerable1.Cast<object>().ToList();
+            List<object> list2 = enumerable2.Cast<object>().ToList();
+            var propertyInfoList = propertyInfos as IList<PropertyInfo> ?? propertyInfos.ToList();
+
+            throw new NotImplementedException();
+            // TODO: Get the keyObject from object1, find the corresponding object2 in list2, do comparison if found, yield variance if not found
+            //foreach (object object1 in list1)
+            //{
+            //    foreach (object object2 in list2)
+            //    {
+            //        if (propertyInfoList.All(p => p.GetValue(object1).Equals(p.GetValue(object2))))
+            //        {
+            //            foreach (ObjectVariance objectVariance in GetObjectVariances(object1, object2, parentVariance))
+            //            {
+            //                yield return objectVariance;
+            //            }
+            //        }
+            //        else
+            //        {
+            //            
+            //        }
+            //    }
+            //}
+        }
+
+        private static IEnumerable<ObjectVariance> GetEnumerableVariancesByPosition(IEnumerable object1,
+                                                                                    IEnumerable object2,
+                                                                                    ObjectVariance parentVariance)
         {
             // Boxing here, but we cannot determine what generic type argument the caller will pass
             List<object> value1List = object1.Cast<object>().ToList();
@@ -164,7 +200,9 @@ namespace Voyagers.Utilities.ObjectComparer
                                                             value1List[i],
                                                             value2List[i],
                                                             parentVariance);
-                foreach (ObjectVariance objectVariance in GetObjectVariances(value1List[i], value2List[i], testParentVariance))
+                foreach (
+                    ObjectVariance objectVariance in
+                        GetObjectVariances(value1List[i], value2List[i], testParentVariance))
                 {
                     yield return objectVariance;
                 }
@@ -207,11 +245,6 @@ namespace Voyagers.Utilities.ObjectComparer
             if (type == null)
             {
                 throw new ArgumentNullException("type");
-            }
-
-            if (Attribute.GetCustomAttributes(type, typeof(KeyAttribute)).Count() > 1)
-            {
-                throw new ArgumentException("Type cannot contain more than one KeyAttribute", "type");
             }
 
             propertyInfos = from prop in GetPropertyInfos(type)
