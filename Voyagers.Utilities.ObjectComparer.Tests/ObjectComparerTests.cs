@@ -112,6 +112,43 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
         }
 
         [Fact]
+        public void EqualArraysOfIntsShouldReturnNoVariance()
+        {
+            // Arrange
+            var array1 = new[] { 1, 2, 3 };
+            var array2 = new[] { 1, 2, 3 };
+
+            // Act
+            List<ObjectVariance> variances = ObjectComparer.GetObjectVariances(array1, array2).ToList();
+
+            // Assert
+            Assert.Empty(variances);
+        }
+
+        [Fact]
+        public void UnequalArraysOfIntsShouldReturnNoVariance()
+        {
+            // Arrange
+            var array1 = new[] { 1, 2, 4 };
+            var array2 = new[] { 1, 2, 3 };
+
+            // Act
+            List<ObjectVariance> variances = ObjectComparer.GetObjectVariances(array1, array2).ToList();
+
+            // Assert
+            Assert.NotEmpty(variances);
+            Assert.Equal(1, variances.Count);
+            Assert.Equal(4, variances[0].PropertyValue1);
+            Assert.Equal(3, variances[0].PropertyValue2);
+
+            Assert.NotNull(variances[0].ParentVariance);
+            Assert.Equal(array1, variances[0].ParentVariance.PropertyValue1);
+            Assert.Equal(array2, variances[0].ParentVariance.PropertyValue2);
+            Assert.Null(variances[0].ParentVariance.PropertyName);
+            Assert.Null(variances[0].ParentVariance.ParentVariance);
+        }
+
+        [Fact]
         public void EqualListOfIntsShouldReturnNoVariance()
         {
             // Arrange
