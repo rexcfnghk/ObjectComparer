@@ -120,14 +120,13 @@ namespace Voyagers.Utilities.ObjectComparer
                 yield break;
             }
 
-            /*** TEST CODE ***/
             // parentVariance == null menas primitives are being passed passed to compare
             // propertyName != null means deepest level reached within the object graph
             if (propertyName != null || parentVariance == null)
             {
                 parentVariance = new ObjectVariance(propertyName, object1, object2, parentVariance);
             }
-            /*** TEST CODE ***/
+
             // For both objects implementing IEnumerable<T>
             Type object1GenericArgument, object2GenericArgument;
             if (TryGetIEnumerableGenericArgument(object1Type, out object1GenericArgument) &&
@@ -136,13 +135,6 @@ namespace Voyagers.Utilities.ObjectComparer
             {
                 string genericAlias;
                 _aliases.TryGetValue(object1GenericArgument, out genericAlias);
-                //parentVariance =
-                //    new ObjectVariance(
-                //        propertyName,
-                //        object1,
-                //        object2,
-                //        parentVariance.ParentVariance);
-
                 IEnumerable<ObjectVariance> result = GetEnumerableVariances(object1,
                                                                             object2,
                                                                             parentVariance);
@@ -159,11 +151,6 @@ namespace Voyagers.Utilities.ObjectComparer
             foreach (
                 ObjectVariance objectVariance in GetVariancesFromProperties(object1, object2, parentVariance))
             {
-                //yield return
-                //    new ObjectVariance(propertyName,
-                //                       objectVariance.PropertyValue1,
-                //                       objectVariance.PropertyValue2,
-                //                       objectVariance.ParentVariance);
                 yield return objectVariance;
             }
         }
@@ -201,16 +188,7 @@ namespace Voyagers.Utilities.ObjectComparer
                                                     parentVariance);
                 foreach (ObjectVariance diff in GetObjectVariances(value1List[i], value2List[i], testParentVariance))
                 {
-                    //yield return
-                    //    new ObjectVariance(diff.PropertyName + " at index " + i,
-                    //                       diff.PropertyValue1,
-                    //                       diff.PropertyValue2,
-                    //                       diff.ParentVariance);
                     yield return diff;
-                    /********* TEST CODE ***********/
-                    // Required for stopping to enumerate after first difference in IEnumerables
-                    // yield break;
-                    /********* TEST CODE ***********/
                 }
             }
         }
@@ -304,12 +282,6 @@ namespace Voyagers.Utilities.ObjectComparer
             {
                 while (propertyInfo1Enumerator.MoveNext() && propertyInfo2Enumerator.MoveNext())
                 {
-                    // Tried return GetObjectVariances(propertyInfo1Enumerator.Current, propertyInfo2Enumerator.Current,
-                    // ++level, object1, object2). Does not work
-                    //var testParentVariance = new ObjectVariance(parentVariance != null ? parentVariance.PropertyName : null,
-                    //                                            object1,
-                    //                                            object2,
-                    //                                            parentVariance);
                     foreach (ObjectVariance diff in GetObjectVariances(propertyInfo1Enumerator.Current,
                                                                        propertyInfo2Enumerator.Current,
                                                                        parentVariance))
