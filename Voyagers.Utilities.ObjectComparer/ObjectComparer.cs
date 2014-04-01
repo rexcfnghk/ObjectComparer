@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using Voyagers.Utilities.ObjectComparer.Attributes;
 
 namespace Voyagers.Utilities.ObjectComparer
 {
@@ -254,8 +255,23 @@ namespace Voyagers.Utilities.ObjectComparer
             return propertyInfos.Any();
         }
 
+        internal static bool HasIgnoreVarianceAttribute(PropertyInfo propertyInfo)
+        {
+            if (propertyInfo == null)
+            {
+                throw new ArgumentNullException("propertyInfo");
+            }
+
+            return Attribute.GetCustomAttributes(propertyInfo).OfType<IgnoreVarianceAttribute>().Any();
+        }
+
         internal static IEnumerable<PropertyInfo> GetPropertyInfos(Type type)
         {
+            if (type == null)
+            {
+                throw new ArgumentNullException("type");
+            }
+
             // Skip indexers using p.GetIndexParameters().Length == 0
             return
                 type.GetProperties(BindingFlags.Public | BindingFlags.Instance)

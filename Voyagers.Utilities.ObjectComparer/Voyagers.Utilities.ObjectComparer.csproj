@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\IgnoreVarianceAttribute.cs" />
     <Compile Include="ObjectComparer.cs" />
     <Compile Include="ObjectVariance.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
