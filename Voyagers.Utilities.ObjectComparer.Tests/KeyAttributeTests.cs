@@ -55,7 +55,7 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
             IEnumerable<PropertyInfo> propertyInfos;
 
             // Act
-            bool result = ObjectComparer.TryGetKeyAttriubte(typeof(User), out propertyInfos);
+            bool result = ReflectionHelper.TryGetKeyAttriubte(typeof(User), out propertyInfos);
 
             // Assert
             Assert.True(result);
@@ -72,7 +72,7 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
             IEnumerable<PropertyInfo> propertyInfos;
 
             // Act
-            bool result = ObjectComparer.TryGetKeyAttriubte(typeof(ImmutableClass), out propertyInfos);
+            bool result = ReflectionHelper.TryGetKeyAttriubte(typeof(ImmutableClass), out propertyInfos);
 
             // Assert
             Assert.False(result);
@@ -87,7 +87,7 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
             IEnumerable<PropertyInfo> propertyInfos;
 
             // Act
-            bool result = ObjectComparer.TryGetKeyAttriubte(typeof(ClassWithTwoKeys), out propertyInfos);
+            bool result = ReflectionHelper.TryGetKeyAttriubte(typeof(ClassWithTwoKeys), out propertyInfos);
 
             // Assert
             Assert.True(result);

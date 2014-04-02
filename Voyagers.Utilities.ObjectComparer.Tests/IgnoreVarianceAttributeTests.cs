@@ -32,6 +32,42 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
         }
 
         [Fact]
+        public void OtherVariancesInPropertiesShouldStillBeReported()
+        {
+            // Arrange
+            var u1 = new User
+            {
+                Age = 10,
+                Id = 1,
+                Name = "Rex"
+            };
+            var u2 = new User
+            {
+                Age = 213,
+                Id = 2,
+                Name = "Rex"
+            };
+
+            // Act
+            List<ObjectVariance> variances = ObjectComparer.GetObjectVariances(u1, u2).ToList();
+
+            // Assert
+            Assert.NotEmpty(variances);
+            Assert.Equal(1, variances.Count);
+
+            Assert.Equal("Id", variances[0].PropertyName);
+            Assert.Equal(1, variances[0].PropertyValue1);
+            Assert.Equal(2, variances[0].PropertyValue2);
+
+            Assert.NotNull(variances[0].ParentVariance);
+            Assert.Null(variances[0].ParentVariance.PropertyName);
+            Assert.Equal(u1, variances[0].ParentVariance.PropertyValue1);
+            Assert.Equal(u2, variances[0].ParentVariance.PropertyValue2);
+
+            Assert.Null(variances[0].ParentVariance.ParentVariance);
+        }
+
+        [Fact]
         public void DifferenceInClassWithIgnoreVarianceAreIgnored()
         {
             // Arrange
