@@ -61,7 +61,17 @@ namespace Voyagers.Utilities.ObjectComparer
                 throw new ArgumentNullException("propertyInfo");
             }
 
-            return Attribute.GetCustomAttributes(propertyInfo).OfType<IgnoreVarianceAttribute>().Any();
+            return Attribute.GetCustomAttribute(propertyInfo, typeof(IgnoreVarianceAttribute)) != null;
+        }
+
+        internal static bool HasIgnoreVarianceAttribute(Type type)
+        {
+            if (type == null)
+            {
+                throw new ArgumentNullException("type");
+            }
+
+            return Attribute.GetCustomAttribute(type, typeof(IgnoreVarianceAttribute)) != null;
         }
 
         internal static IEnumerable<PropertyInfo> GetPropertyInfos(Type type)

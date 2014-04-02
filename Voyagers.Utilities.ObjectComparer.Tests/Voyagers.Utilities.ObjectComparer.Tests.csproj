@@ -65,6 +65,7 @@
     <Compile Include="ObjectComparerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestClasses\IgnoreVarianceClass.cs" />
+    <Compile Include="TestClasses\IgnoreVarianceClassesHolder.cs" />
     <Compile Include="TestClasses\ImmutableClass.cs" />
     <Compile Include="TestClasses\PrimitivesHolder.cs" />
     <Compile Include="TestClasses\MutableClass.cs" />

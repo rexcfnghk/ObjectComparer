@@ -3,13 +3,12 @@ using System.Linq;
 using System.Reflection;
 using Voyagers.Utilities.ObjectComparer.Tests.TestClasses;
 using Xunit;
-using Xunit.Extensions;
 
 namespace Voyagers.Utilities.ObjectComparer.Tests
 {
     public class KeyAttributeTests
     {
-        public static IEnumerable<User> UserCollection1
+        private static IEnumerable<User> UserCollection1
         {
             get
             {
@@ -22,7 +21,7 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
             }
         }
 
-        public static IEnumerable<User> UserCollection2
+        private static IEnumerable<User> UserCollection2
         {
             get
             {

@@ -1,10 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
-using Voyagers.Utilities.ObjectComparer.Attributes;
 
 namespace Voyagers.Utilities.ObjectComparer
 {
@@ -28,6 +26,17 @@ namespace Voyagers.Utilities.ObjectComparer
             if (variances.Any())
             {
                 return variances;
+            }
+
+            // ReSharper disable once PossibleNullReferenceException
+            Type object1Type = object1.GetType();
+            Type object2Type = object2.GetType();
+
+            // When one of the types have IgnoreVarianceAttribute on it
+            if (ReflectionHelper.HasIgnoreVarianceAttribute(object1Type) ||
+                ReflectionHelper.HasIgnoreVarianceAttribute(object2Type))
+            {
+                return Enumerable.Empty<ObjectVariance>();
             }
 
             // ReSharper disable once PossibleNullReferenceException

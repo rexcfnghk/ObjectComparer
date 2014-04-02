@@ -91,5 +91,112 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
             // Assert
             Assert.Empty(variances);
         }
+
+        [Fact]
+        public void DifferenceInListsWithIgnoreVarianceShouldBeIgnored()
+        {
+            // Arrange
+            var l1 = new List<IgnoreVarianceClass>
+            {
+                new IgnoreVarianceClass
+                {
+                    Id = 201,
+                    IsHappy = false,
+                    Name = "sdafsdf"
+                }
+            };
+
+            var l2 = new List<IgnoreVarianceClass>
+            {
+                new IgnoreVarianceClass
+                {
+                    Id = 1231,
+                    IsHappy = true,
+                    Name = "dafsdsdaf"
+                }
+            };
+
+            // Act
+            List<ObjectVariance> variances = ObjectComparer.GetObjectVariances(l1, l2).ToList();
+
+            // Assert
+            Assert.Empty(variances);
+        }
+
+        [Fact]
+        public void DifferenceInPropertiesWithIgnoreVarianceShouldBeIgnored()
+        {
+            // Arrange
+            var inner1 = new IgnoreVarianceClass
+            {
+                Id = 201,
+                IsHappy = false,
+                Name = "sdafsdf"
+            };
+
+            var inner2 = new IgnoreVarianceClass
+            {
+                Id = 1231,
+                IsHappy = true,
+                Name = "dafsdsdaf"
+            };
+
+            var c1 = new IgnoreVarianceClassesHolder
+            {
+                IgnoreVarianceClass = inner1
+            };
+
+            var c2 = new IgnoreVarianceClassesHolder
+            {
+                IgnoreVarianceClass = inner2
+            };
+
+            // Act
+            List<ObjectVariance> variances = ObjectComparer.GetObjectVariances(c1, c2).ToList();
+
+            // Assert
+            Assert.Empty(variances);
+        }
+
+        [Fact]
+        public void DifferenceInIEnumerablePropertiesWithIgnoreVarianceShouldBeIgnored()
+        {
+            // Arrange
+            var l1 = new List<IgnoreVarianceClass>
+            {
+                new IgnoreVarianceClass
+                {
+                    Id = 201,
+                    IsHappy = false,
+                    Name = "sdafsdf"
+                }
+            };
+
+            var l2 = new List<IgnoreVarianceClass>
+            {
+                new IgnoreVarianceClass
+                {
+                    Id = 1231,
+                    IsHappy = true,
+                    Name = "dafsdsdaf"
+                }
+            };
+
+            var c1 = new IgnoreVarianceClassesHolder
+            {
+                IgnoreVarianceClasses = l1
+            };
+
+            var c2 = new IgnoreVarianceClassesHolder
+            {
+                IgnoreVarianceClasses = l2
+            };
+
+            // Act
+            List<ObjectVariance> variances = ObjectComparer.GetObjectVariances(c1, c2).ToList();
+
+            // Assert
+            Assert.Empty(variances);
+        }
     }
 }
