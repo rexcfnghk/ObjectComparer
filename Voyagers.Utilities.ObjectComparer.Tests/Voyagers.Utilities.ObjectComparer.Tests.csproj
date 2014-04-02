@@ -57,12 +57,14 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="IgnoreVarianceAttributeTests.cs" />
     <Compile Include="KeyAttributeTests.cs" />
     <Compile Include="ObjectComaprerTwoVariancesTests.cs" />
     <Compile Include="TestClasses\ClassWithTwoKeys.cs" />
     <Compile Include="TestClasses\CollectionClass.cs" />
     <Compile Include="ObjectComparerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestClasses\IgnoreVarianceClass.cs" />
     <Compile Include="TestClasses\ImmutableClass.cs" />
     <Compile Include="TestClasses\PrimitivesHolder.cs" />
     <Compile Include="TestClasses\MutableClass.cs" />
