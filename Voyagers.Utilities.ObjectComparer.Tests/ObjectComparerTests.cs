@@ -41,7 +41,7 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
             // Assert
             Assert.NotEmpty(variances);
             Assert.Equal(1, variances.Count);
-            Assert.Equal("value", variances[0].PropertyName);
+            Assert.Equal("Type", variances[0].PropertyName);
             Assert.Equal(1, variances[0].PropertyValue1);
             Assert.Equal("test", variances[0].PropertyValue2);
             Assert.Equal(null, variances[0].ParentVariance);
