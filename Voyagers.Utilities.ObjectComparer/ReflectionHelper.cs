@@ -61,7 +61,11 @@ namespace Voyagers.Utilities.ObjectComparer
                 throw new ArgumentNullException("propertyInfo");
             }
 
-            return Attribute.GetCustomAttribute(propertyInfo, typeof(IgnoreVarianceAttribute)) != null;
+            // Two scenarios here:
+            // 1. IgnoreVarianceAttribute is applied on the property of the containing class
+            // 2. IgnoreVarianceAttirubte is applied on the declaring type of the property
+            return Attribute.GetCustomAttribute(propertyInfo, typeof(IgnoreVarianceAttribute)) != null ||
+                   HasIgnoreVarianceAttribute(propertyInfo.DeclaringType);
         }
 
         internal static bool HasIgnoreVarianceAttribute(Type type)

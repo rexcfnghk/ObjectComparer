@@ -56,7 +56,8 @@ namespace Voyagers.Utilities.ObjectComparer
             if (propertyInfo1 != null && propertyInfo2 != null && propertyInfo1.Name == propertyInfo2.Name)
             {
                 // Found IgnoreVarianceAttribute
-                if (ReflectionHelper.HasIgnoreVarianceAttribute(propertyInfo1) || ReflectionHelper.HasIgnoreVarianceAttribute(propertyInfo2))
+                if (ReflectionHelper.HasIgnoreVarianceAttribute(propertyInfo1) ||
+                    ReflectionHelper.HasIgnoreVarianceAttribute(propertyInfo2))
                 {
                     yield break;
                 }
@@ -128,6 +129,12 @@ namespace Voyagers.Utilities.ObjectComparer
                 ReflectionHelper.TryGetIEnumerableGenericArgument(object2Type, out object2GenericArgument) &&
                 object1GenericArgument == object2GenericArgument)
             {
+                // Found IgnoreVarianceAttribute
+                if (ReflectionHelper.HasIgnoreVarianceAttribute(object1GenericArgument))
+                {
+                    yield break;
+                }
+
                 IEnumerable<PropertyInfo> propertyInfos;
                 IEnumerable<ObjectVariance> result = ReflectionHelper.TryGetKeyAttriubte(object1GenericArgument,
                                                                                          out propertyInfos)
@@ -265,6 +272,13 @@ namespace Voyagers.Utilities.ObjectComparer
             {
                 while (propertyInfo1Enumerator.MoveNext() && propertyInfo2Enumerator.MoveNext())
                 {
+                    // Found IgnoreVarianceAttribute
+                    if (ReflectionHelper.HasIgnoreVarianceAttribute(propertyInfo1Enumerator.Current) ||
+                        ReflectionHelper.HasIgnoreVarianceAttribute(propertyInfo2Enumerator.Current))
+                    {
+                        continue;
+                    }
+
                     foreach (ObjectVariance objectVariance in GetObjectVariances(propertyInfo1Enumerator.Current,
                                                                                  propertyInfo2Enumerator.Current,
                                                                                  parentVariance))
