@@ -48,8 +48,7 @@ namespace Voyagers.Utilities.ObjectComparer
             }
 
             propertyInfos = from prop in GetPropertyInfos(type)
-                            let attributes = Attribute.GetCustomAttributes(prop)
-                            where attributes.OfType<KeyAttribute>().Any()
+                            where Attribute.GetCustomAttribute(prop, typeof(KeyAttribute)) != null
                             select prop;
             return propertyInfos.Any();
         }
