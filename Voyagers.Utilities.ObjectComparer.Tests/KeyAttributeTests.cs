@@ -117,5 +117,19 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
             // Assert
             Assert.Empty(variances);
         }
+
+        [Fact]
+        public void ListOfUsersShouldBeComparedUsingKeys()
+        {
+            // Arrange
+            List<User> l1 = UserCollection1.ToList();
+            List<User> l2 = UserCollection2.ToList();
+
+            // Act
+            List<ObjectVariance> variances = ObjectComparer.GetObjectVariances(l1, l2).ToList();
+
+            // Assert
+            Assert.Empty(variances);
+        }
     }
 }
