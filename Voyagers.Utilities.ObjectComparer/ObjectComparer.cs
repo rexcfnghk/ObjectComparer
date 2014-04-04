@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic;
 using System.Reflection;
 
 namespace Voyagers.Utilities.ObjectComparer
@@ -167,10 +168,11 @@ namespace Voyagers.Utilities.ObjectComparer
                                                                                IEnumerable<PropertyInfo> propertyInfos,
                                                                                ObjectVariance parentVariance)
         {
+            string propertyInfoList = String.Join(", ", propertyInfos.Select(p => p.Name));
+
             // Boxing here, but we cannot determine what generic type argument the caller will pass
-            List<object> list1 = enumerable1.Cast<object>().ToList();
-            List<object> list2 = enumerable2.Cast<object>().ToList();
-            var propertyInfoList = propertyInfos as IList<PropertyInfo> ?? propertyInfos.ToList();
+            IQueryable list1 = enumerable1.AsQueryable().GroupBy(String.Format("new ({0})", propertyInfoList), "it");
+            IQueryable list2 = enumerable2.AsQueryable().GroupBy(String.Format("new ({0})", propertyInfoList), "it");
 
             throw new NotImplementedException();
             // TODO: Get the keyObject from object1, find the corresponding object2 in list2, do comparison if found, yield variance if not found
