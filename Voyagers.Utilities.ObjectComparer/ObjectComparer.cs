@@ -157,7 +157,8 @@ namespace Voyagers.Utilities.ObjectComparer
 
             // Compare by property
             foreach (
-                ObjectVariance objectVariance in GetVariancesFromProperties(object1, object2, parentVariance))
+                ObjectVariance objectVariance in 
+                GetVariancesFromProperties(object1, object2, parentVariance))
             {
                 yield return objectVariance;
             }
@@ -168,13 +169,146 @@ namespace Voyagers.Utilities.ObjectComparer
                                                                                IEnumerable<PropertyInfo> propertyInfos,
                                                                                ObjectVariance parentVariance)
         {
-            string propertyInfoList = String.Join(", ", propertyInfos.Select(p => p.Name));
+            List<string> propertyInfosList = propertyInfos.Select(p => p.Name).ToList();
+            string propertyNames = String.Join(", ", propertyInfosList);
 
             // Boxing here, but we cannot determine what generic type argument the caller will pass
-            IQueryable list1 = enumerable1.AsQueryable().GroupBy(String.Format("new ({0})", propertyInfoList), "it");
-            IQueryable list2 = enumerable2.AsQueryable().GroupBy(String.Format("new ({0})", propertyInfoList), "it");
+            var query1 = enumerable1.AsQueryable().GroupBy(String.Format("new ({0})", propertyNames), "it").Select("new (it.Key, it.Count() as Count, it as Value, false as Compared)");
+            var query2 = enumerable2.AsQueryable().GroupBy(String.Format("new ({0})", propertyNames), "it").Select("new (it.Key, it.Count() as Count, it as Value, false as Compared)");
 
-            throw new NotImplementedException();
+            foreach (
+                ObjectVariance objectVariance in
+                    KeyPropertiesComparer.GetSetDifferenceVariances(query1, query2, parentVariance))
+            {
+                yield return objectVariance;
+            }
+
+            //IEnumerator enumerator1 = query1.GetEnumerator();
+            //IEnumerator enumerator2 = query2.GetEnumerator();
+
+            //try
+            //{
+            //    while (enumerator1.MoveNext() && enumerator2.MoveNext())
+            //    {
+            //        dynamic group1 = enumerator1.Current;
+            //        dynamic group2 = enumerator2.Current;
+
+            //        if (group1.Compared || group2.Compared)
+            //        {
+            //            continue;
+            //        }
+
+            //        if (!Object.Equals(group1.Key, group2.Key))
+            //        {
+            //            continue;
+            //        }
+
+            //        if (group1.Count > 1 || group2.Count > 1)
+            //        {
+            //            throw new InvalidOperationException("The IEnumerable contains objects with the same key");
+            //        }
+
+            //        IEnumerator object1Enumerator = group1.Value.GetEnumerator();
+            //        IEnumerator object2Enumerator = group2.Value.GetEnumeartor();
+
+            //        try
+            //        {
+            //            while (object1Enumerator.MoveNext() && object2Enumerator.MoveNext())
+            //            {
+            //                var testVariance = new ObjectVariance(group1.Key.ToString(),
+            //                                                      object1Enumerator.Current,
+            //                                                      object2Enumerator.Current,
+            //                                                      parentVariance);
+
+            //                foreach (
+            //                    ObjectVariance variance in
+            //                        GetObjectVariances(object1Enumerator.Current,
+            //                                           object2Enumerator.Current,
+            //                                           testVariance))
+            //                {
+            //                    yield return variance;
+            //                }
+
+            //                group1.Compared = true;
+            //                group2.Compared = true;
+            //            }
+            //        }
+            //        finally
+            //        {
+            //            if (object1Enumerator as IDisposable != null)
+            //            {
+            //                ((IDisposable)object1Enumerator).Dispose();
+            //            }
+
+            //            if (object2Enumerator as IDisposable != null)
+            //            {
+            //                ((IDisposable)object2Enumerator).Dispose();
+            //            }
+            //        }
+            //    }
+            //}
+            //finally
+            //{
+            //    if (enumerator1 as IDisposable != null)
+            //    {
+            //        ((IDisposable)enumerator1).Dispose();
+            //    }
+
+            //    if (enumerator2 as IDisposable != null)
+            //    {
+            //        ((IDisposable)enumerator2).Dispose();
+            //    }
+            //}
+
+            foreach (dynamic group1 in query1)
+            {
+                foreach (dynamic group2 in query2)
+                {
+                    //var key1 = group1.Key;
+                    //var key2 = group2.Key;
+
+                    // Must access the Value property here to use foreach loop below
+                    //var group1List = ;
+                    //var group2List = ;
+                    if (group1.Compared || group2.Compared)
+                    {
+                        continue;
+                    }
+
+                    if (!Object.Equals(group1.Key, group2.Key))
+                    {
+                        continue;
+                    }
+
+                    if (group1.Count > 1 || group2.Count > 1)
+                    {
+                        throw new InvalidOperationException("The IEnumerable contains objects with the same key");
+                    }
+
+                    // Bug here where I cannot make sure exactly one element exists in each grouping
+                    foreach (var object1 in group1.Value)
+                    {
+                        foreach (var object2 in group2.Value)
+                        {
+                            var testVariance = new ObjectVariance(group1.Key.ToString(),
+                                                                  object1,
+                                                                  object2,
+                                                                  parentVariance);
+                            foreach (ObjectVariance objectVariance in GetObjectVariances(object1, object2, testVariance))
+                            {
+                                yield return objectVariance;
+                            }
+                        }
+                    }
+
+                    group1.Compared = true;
+                    group2.Compared = true;
+                }
+            }
+
+
+
+            //throw new NotImplementedException();
             // TODO: Get the keyObject from object1, find the corresponding object2 in list2, do comparison if found, yield variance if not found
             //foreach (object object1 in list1)
             //{
