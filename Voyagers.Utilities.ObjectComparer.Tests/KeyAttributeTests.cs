@@ -248,6 +248,32 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
         }
 
         [Fact]
+        public void DifferentLengthsOfUserListsReversedShouldAlsoReturnVariances()
+        {
+            // Arrange
+            List<User> l1 = UserCollection4.ToList();
+            List<User> l2 = UserCollection1.ToList();
+
+            // Act
+            List<ObjectVariance> variances = ObjectComparer.GetObjectVariances(l1, l2).ToList();
+
+            // Assert
+            Assert.NotEmpty(variances);
+            Assert.Equal(1, variances.Count);
+
+            Assert.Equal("Extra object in IEnumerable 1 with key {Id=4}", variances[0].PropertyName);
+            Assert.Equal(l1[3], variances[0].PropertyValue1);
+            Assert.Null(variances[0].PropertyValue2);
+
+            Assert.NotNull(variances[0].ParentVariance);
+            Assert.Equal(l1, variances[0].ParentVariance.PropertyValue1);
+            Assert.Equal(l2, variances[0].ParentVariance.PropertyValue2);
+            Assert.Null(variances[0].ParentVariance.PropertyName);
+
+            Assert.Null(variances[0].ParentVariance.ParentVariance);
+        }
+
+        [Fact]
         public void ClassesWithTwoKeysCanBeDetected()
         {
             // Arrange

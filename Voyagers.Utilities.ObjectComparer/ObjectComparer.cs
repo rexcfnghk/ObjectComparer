@@ -244,9 +244,11 @@ namespace Voyagers.Utilities.ObjectComparer
             // TODO: Continue comparing even if Count is not equal / Use KeyAttribute in comparing
             for (int i = 0; i < value1List.Count; i++)
             {
-                // As a test variance for each element in the IEnumerable
                 // Optional key object used in here since GetEnumerableVariancesByKey will eventually route to here
+                // propertyName will be assigned "this[i]" when comparing by position or key.ToString() when comparing by key
                 string propertyName = key == null ? String.Format("this[{0}]", i) : key.ToString();
+
+                // As a test variance for each element in the IEnumerable
                 var testParentVariance = new ObjectVariance(propertyName,
                                                             value1List[i],
                                                             value2List[i],
