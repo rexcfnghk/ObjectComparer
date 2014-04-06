@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Voyagers.Utilities.ObjectComparer
 {
@@ -39,8 +37,13 @@ namespace Voyagers.Utilities.ObjectComparer
 
                     foreach (var object1 in group1.Value)
                     {
+                        string propertyName = parentVariance != null
+                                                  ? !String.IsNullOrEmpty(parentVariance.PropertyName)
+                                                        ? parentVariance.PropertyName
+                                                        : "IEnumerable 1"
+                                                  : "IEnumerable 1";
                         yield return
-                            new ObjectVariance("Extra object in IEnumerable 1", object1, null, parentVariance);
+                            new ObjectVariance(String.Format("Extra object in {0} with key {1}", propertyName, group1.Key.ToString()), object1, null, parentVariance);
                     }
                 }
             }
@@ -62,7 +65,12 @@ namespace Voyagers.Utilities.ObjectComparer
 
                     foreach (var object2 in group2.Value)
                     {
-                        yield return new ObjectVariance("Extra object in IEnumerable 2", null, object2, parentVariance);
+                        string propertyName = parentVariance != null
+                                                  ? !String.IsNullOrEmpty(parentVariance.PropertyName)
+                                                        ? parentVariance.PropertyName
+                                                        : "IEnumerable 2"
+                                                  : "IEnumerable 2";
+                        yield return new ObjectVariance(String.Format("Extra object in {0} with key {1}", propertyName, group2.Key.ToString()), null, object2, parentVariance);
                     }
                 }
             }

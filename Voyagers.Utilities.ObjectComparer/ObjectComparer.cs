@@ -176,6 +176,7 @@ namespace Voyagers.Utilities.ObjectComparer
             var query1 = enumerable1.AsQueryable().GroupBy(String.Format("new ({0})", propertyNames), "it").Select("new (it.Key, it.Count() as Count, it as Value, false as Compared)");
             var query2 = enumerable2.AsQueryable().GroupBy(String.Format("new ({0})", propertyNames), "it").Select("new (it.Key, it.Count() as Count, it as Value, false as Compared)");
 
+            // Make sure if query1 contains more items than query2, or vice versa, can be detected
             foreach (
                 ObjectVariance objectVariance in
                     KeyPropertiesComparer.GetSetDifferenceVariances(query1, query2, parentVariance))
@@ -183,93 +184,10 @@ namespace Voyagers.Utilities.ObjectComparer
                 yield return objectVariance;
             }
 
-            //IEnumerator enumerator1 = query1.GetEnumerator();
-            //IEnumerator enumerator2 = query2.GetEnumerator();
-
-            //try
-            //{
-            //    while (enumerator1.MoveNext() && enumerator2.MoveNext())
-            //    {
-            //        dynamic group1 = enumerator1.Current;
-            //        dynamic group2 = enumerator2.Current;
-
-            //        if (group1.Compared || group2.Compared)
-            //        {
-            //            continue;
-            //        }
-
-            //        if (!Object.Equals(group1.Key, group2.Key))
-            //        {
-            //            continue;
-            //        }
-
-            //        if (group1.Count > 1 || group2.Count > 1)
-            //        {
-            //            throw new InvalidOperationException("The IEnumerable contains objects with the same key");
-            //        }
-
-            //        IEnumerator object1Enumerator = group1.Value.GetEnumerator();
-            //        IEnumerator object2Enumerator = group2.Value.GetEnumeartor();
-
-            //        try
-            //        {
-            //            while (object1Enumerator.MoveNext() && object2Enumerator.MoveNext())
-            //            {
-            //                var testVariance = new ObjectVariance(group1.Key.ToString(),
-            //                                                      object1Enumerator.Current,
-            //                                                      object2Enumerator.Current,
-            //                                                      parentVariance);
-
-            //                foreach (
-            //                    ObjectVariance variance in
-            //                        GetObjectVariances(object1Enumerator.Current,
-            //                                           object2Enumerator.Current,
-            //                                           testVariance))
-            //                {
-            //                    yield return variance;
-            //                }
-
-            //                group1.Compared = true;
-            //                group2.Compared = true;
-            //            }
-            //        }
-            //        finally
-            //        {
-            //            if (object1Enumerator as IDisposable != null)
-            //            {
-            //                ((IDisposable)object1Enumerator).Dispose();
-            //            }
-
-            //            if (object2Enumerator as IDisposable != null)
-            //            {
-            //                ((IDisposable)object2Enumerator).Dispose();
-            //            }
-            //        }
-            //    }
-            //}
-            //finally
-            //{
-            //    if (enumerator1 as IDisposable != null)
-            //    {
-            //        ((IDisposable)enumerator1).Dispose();
-            //    }
-
-            //    if (enumerator2 as IDisposable != null)
-            //    {
-            //        ((IDisposable)enumerator2).Dispose();
-            //    }
-            //}
-
             foreach (dynamic group1 in query1)
             {
                 foreach (dynamic group2 in query2)
                 {
-                    //var key1 = group1.Key;
-                    //var key2 = group2.Key;
-
-                    // Must access the Value property here to use foreach loop below
-                    //var group1List = ;
-                    //var group2List = ;
                     if (group1.Compared || group2.Compared)
                     {
                         continue;
@@ -285,53 +203,24 @@ namespace Voyagers.Utilities.ObjectComparer
                         throw new InvalidOperationException("The IEnumerable contains objects with the same key");
                     }
 
-                    // Bug here where I cannot make sure exactly one element exists in each grouping
-                    foreach (var object1 in group1.Value)
+                    // Here we already guaranteed there is one value per group for each key
+                    foreach (
+                        ObjectVariance objectVariance in
+                            GetEnumerableVariancesByPosition(group1.Value, group2.Value, parentVariance, group1.Key))
                     {
-                        foreach (var object2 in group2.Value)
-                        {
-                            var testVariance = new ObjectVariance(group1.Key.ToString(),
-                                                                  object1,
-                                                                  object2,
-                                                                  parentVariance);
-                            foreach (ObjectVariance objectVariance in GetObjectVariances(object1, object2, testVariance))
-                            {
-                                yield return objectVariance;
-                            }
-                        }
+                        yield return objectVariance;
                     }
 
                     group1.Compared = true;
                     group2.Compared = true;
                 }
             }
-
-
-
-            //throw new NotImplementedException();
-            // TODO: Get the keyObject from object1, find the corresponding object2 in list2, do comparison if found, yield variance if not found
-            //foreach (object object1 in list1)
-            //{
-            //    foreach (object object2 in list2)
-            //    {
-            //        if (propertyInfoList.All(p => p.GetValue(object1).Equals(p.GetValue(object2))))
-            //        {
-            //            foreach (ObjectVariance objectVariance in GetObjectVariances(object1, object2, parentVariance))
-            //            {
-            //                yield return objectVariance;
-            //            }
-            //        }
-            //        else
-            //        {
-            //            
-            //        }
-            //    }
-            //}
         }
 
         private static IEnumerable<ObjectVariance> GetEnumerableVariancesByPosition(IEnumerable object1,
                                                                                     IEnumerable object2,
-                                                                                    ObjectVariance parentVariance)
+                                                                                    ObjectVariance parentVariance,
+                                                                                    object key = null)
         {
             // Boxing here, but we cannot determine what generic type argument the caller will pass
             List<object> value1List = object1.Cast<object>().ToList();
@@ -356,7 +245,9 @@ namespace Voyagers.Utilities.ObjectComparer
             for (int i = 0; i < value1List.Count; i++)
             {
                 // As a test variance for each element in the IEnumerable
-                var testParentVariance = new ObjectVariance(String.Format("this[{0}]", i),
+                // Optional key object used in here since GetEnumerableVariancesByKey will eventually route to here
+                string propertyName = key == null ? String.Format("this[{0}]", i) : key.ToString();
+                var testParentVariance = new ObjectVariance(propertyName,
                                                             value1List[i],
                                                             value2List[i],
                                                             parentVariance);
