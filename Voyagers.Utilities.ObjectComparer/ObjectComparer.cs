@@ -172,9 +172,19 @@ namespace Voyagers.Utilities.ObjectComparer
             List<string> propertyInfosList = propertyInfos.Select(p => p.Name).ToList();
             string propertyNames = String.Join(", ", propertyInfosList);
 
-            // Boxing here, but we cannot determine what generic type argument the caller will pass
-            var query1 = enumerable1.AsQueryable().GroupBy(String.Format("new ({0})", propertyNames), "it").Select("new (it.Key, it.Count() as Count, it as Value, false as Compared)");
-            var query2 = enumerable2.AsQueryable().GroupBy(String.Format("new ({0})", propertyNames), "it").Select("new (it.Key, it.Count() as Count, it as Value, false as Compared)");
+            // Try to group by properties having the KeyAttribute applied using Dynamic LINQ
+            // IGroupedEnumerable with Key => Anonymous object with the key properties, 
+            //                         Count => Count of grouped objects
+            //                         Value => The grouped object themselves
+            //                         Compared => Boolean flag for determining whether we can skip comparisons or not
+            IQueryable query1 =
+                enumerable1.AsQueryable()
+                           .GroupBy(String.Format("new ({0})", propertyNames), "it")
+                           .Select("new (it.Key, it.Count() as Count, it as Value, false as Compared)");
+            IQueryable query2 =
+                enumerable2.AsQueryable()
+                           .GroupBy(String.Format("new ({0})", propertyNames), "it")
+                           .Select("new (it.Key, it.Count() as Count, it as Value, false as Compared)");
 
             // Make sure if query1 contains more items than query2, or vice versa, can be detected
             foreach (
@@ -241,7 +251,6 @@ namespace Voyagers.Utilities.ObjectComparer
             }
 
             // Try to compare by position
-            // TODO: Continue comparing even if Count is not equal / Use KeyAttribute in comparing
             for (int i = 0; i < value1List.Count; i++)
             {
                 // Optional key object used in here since GetEnumerableVariancesByKey will eventually route to here
