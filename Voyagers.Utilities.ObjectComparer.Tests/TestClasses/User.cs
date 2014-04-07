@@ -12,5 +12,7 @@ namespace Voyagers.Utilities.ObjectComparer.Tests.TestClasses
 
         [IgnoreVariance]
         public int Age { get; set; }
+
+        public Role Role { get; set; }
     }
 }

@@ -14,11 +14,11 @@ namespace Voyagers.Utilities.ObjectComparer
             IQueryable keyQuery1 = query1.Select("it.Key");
             IQueryable keyQuery2 = query2.Select("it.Key");
 
-            IEnumerable<object> list1 = from dynamic q in keyQuery1 select q;
-            IEnumerable<object> list2 = from dynamic q in keyQuery2 select q;
+            IEnumerable<object> keyList1 = from dynamic q in keyQuery1 select q;
+            IEnumerable<object> keyList2 = from dynamic q in keyQuery2 select q;
 
-            List<object> extraKeysIn1 = list1.Except(list2).ToList();
-            List<object> extraKeysIn2 = list2.Except(list1).ToList();
+            List<object> extraKeysIn1 = keyList1.Except(keyList2).ToList();
+            List<object> extraKeysIn2 = keyList2.Except(keyList1).ToList();
 
             // Extra Keys in query1
             foreach (var extraKey in extraKeysIn1)

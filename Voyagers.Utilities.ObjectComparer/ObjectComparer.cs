@@ -9,6 +9,13 @@ namespace Voyagers.Utilities.ObjectComparer
 {
     public static class ObjectComparer
     {
+        private static readonly HashSet<object> _traversedObjects;
+
+        static ObjectComparer()
+        {
+            _traversedObjects = new HashSet<object>();
+        }
+
         /// <summary>
         ///  Return object variances between two dynamic objects, serves as an entry point to all comparisons
         /// </summary>

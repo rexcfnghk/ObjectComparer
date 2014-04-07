@@ -57,6 +57,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="CircularReferenceTests.cs" />
     <Compile Include="IgnoreVarianceAttributeTests.cs" />
     <Compile Include="KeyAttributeTests.cs" />
     <Compile Include="ObjectComaprerTwoVariancesTests.cs" />
@@ -69,6 +70,7 @@
     <Compile Include="TestClasses\ImmutableClass.cs" />
     <Compile Include="TestClasses\PrimitivesHolder.cs" />
     <Compile Include="TestClasses\MutableClass.cs" />
+    <Compile Include="TestClasses\Role.cs" />
     <Compile Include="TestClasses\User.cs" />
   </ItemGroup>
   <ItemGroup>
