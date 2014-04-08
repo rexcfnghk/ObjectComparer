@@ -75,14 +75,19 @@ namespace Voyagers.Utilities.ObjectComparer
             return obj.GetType() == GetType() && Equals((ObjectVariance)obj);
         }
 
+        /// <summary>
+        /// GetHashCode implementation credits to Jon Skeet: http://stackoverflow.com/questions/263400/what-is-the-best-algorithm-for-an-overridden-system-object-gethashcode
+        /// </summary>
+        /// <returns></returns>
         public override int GetHashCode()
         {
             unchecked
             {
-                int hashCode = (_propertyName != null ? _propertyName.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (_propertyValue1 != null ? _propertyValue1.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (_propertyValue2 != null ? _propertyValue2.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (_parentVariance != null ? _parentVariance.GetHashCode() : 0);
+                int hashCode = 17;
+                hashCode = (hashCode * 23) + (_propertyName != null ? _propertyName.GetHashCode() : 0);
+                hashCode = (hashCode * 23) + (_propertyValue1 != null ? _propertyValue1.GetHashCode() : 0);
+                hashCode = (hashCode * 23) + (_propertyValue2 != null ? _propertyValue2.GetHashCode() : 0);
+                hashCode = (hashCode * 23) + (_parentVariance != null ? _parentVariance.GetHashCode() : 0);
                 return hashCode;
             }
         }
