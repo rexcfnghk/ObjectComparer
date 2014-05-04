@@ -9,11 +9,11 @@ namespace Voyagers.Utilities.ObjectComparer
 {
     public static class ObjectComparer
     {
-        private static readonly HashSet<object> _traversedObjects;
+        private static readonly HashSet<Tuple<object, object>> _traversedObjects;
 
         static ObjectComparer()
         {
-            _traversedObjects = new HashSet<object>();
+            _traversedObjects = new HashSet<Tuple<object, object>>(new ObjectTupleEqualityComparer());
         }
 
         /// <summary>
@@ -47,10 +47,13 @@ namespace Voyagers.Utilities.ObjectComparer
                 return Enumerable.Empty<ObjectVariance>();
             }
 
+            // Empty _traversedObjects
+            _traversedObjects.Clear();
+
             // ReSharper disable once PossibleNullReferenceException
             return object1.GetType() != object2.GetType()
                        ? new ObjectVariance("Type", object1, object2, null).Yield()
-                       : GetObjectVariances(object1, object2, null);
+                       : GetObjectVariances( object1, object2, null);
         }
 
         private static IEnumerable<ObjectVariance> GetObjectVariances(dynamic object1,
@@ -75,6 +78,13 @@ namespace Voyagers.Utilities.ObjectComparer
                 // ReSharper disable once PossibleNullReferenceException
                 object1 = (object1 as PropertyInfo).GetValue(parentVariance.PropertyValue1);
                 object2 = (object2 as PropertyInfo).GetValue(parentVariance.PropertyValue2);
+
+                // Check if already traversed
+                if (!ReflectionHelper.IsPrimitiveOrString(object1) && !ReflectionHelper.IsPrimitiveOrString(object2) &&
+                    _traversedObjects.Contains(new Tuple<object, object>(object1, object2)))
+                {
+                    yield break;
+                }
             }
 
             // Both objects are null, required for inner property checking
@@ -161,6 +171,9 @@ namespace Voyagers.Utilities.ObjectComparer
                 // Required for more than one difference in inner IEnumerables
                 yield break;
             }
+
+            // Add to traversed HashSet
+            _traversedObjects.Add(new Tuple<object, object>(object1, object2));
 
             // Compare by property
             foreach (

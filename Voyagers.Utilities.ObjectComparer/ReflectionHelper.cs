@@ -105,5 +105,10 @@ namespace Voyagers.Utilities.ObjectComparer
 
             yield return item;
         }
+
+        internal static bool IsPrimitiveOrString(object o)
+        {
+            return o is string || o.GetType().IsPrimitive;
+        }
     }
 }

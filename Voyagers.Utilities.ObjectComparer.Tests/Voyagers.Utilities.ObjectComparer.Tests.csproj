@@ -71,7 +71,9 @@
     <Compile Include="TestClasses\PrimitivesHolder.cs" />
     <Compile Include="TestClasses\MutableClass.cs" />
     <Compile Include="TestClasses\Role.cs" />
+    <Compile Include="TestClasses\RoleWithUserCollection.cs" />
     <Compile Include="TestClasses\User.cs" />
+    <Compile Include="TestClasses\UserWithRoleCollection.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

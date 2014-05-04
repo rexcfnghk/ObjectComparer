@@ -49,5 +49,47 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
             // Assert
             Assert.NotEmpty(variances);
         }
+
+        [Fact]
+        public void UserWithRoleCollectionDoesNotCauseStackOverflow()
+        {
+            // Arrange
+            var role1 = new RoleWithUserCollection
+            {
+                Id = 1,
+                Name = "Administrator"
+            };
+
+            var role2 = new RoleWithUserCollection
+            {
+                Id = 2,
+                Name = "Tester"
+            };
+
+            var user1 = new UserWithRoleCollection
+            {
+                Id = 1,
+                Name = "Foo",
+                Age = 10
+            };
+
+            var user2 = new UserWithRoleCollection
+            {
+                Id = 2,
+                Name = "Foo",
+                Age = 10,
+            };
+
+            role1.Users = new HashSet<UserWithRoleCollection> { user1, user2 };
+            role2.Users = new HashSet<UserWithRoleCollection> { user1 };
+            user1.Roles = new HashSet<RoleWithUserCollection> { role1, role2 };
+            user2.Roles = new HashSet<RoleWithUserCollection> { role1 };
+
+            // Act and Assert
+            List<ObjectVariance> variances = ObjectComparer.GetObjectVariances(user1, user2).ToList();
+
+            // Assert
+            Assert.NotEmpty(variances);
+        }
     }
 }
