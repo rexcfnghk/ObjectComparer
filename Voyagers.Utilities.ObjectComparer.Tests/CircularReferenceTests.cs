@@ -8,7 +8,7 @@ using Xunit;
 
 namespace Voyagers.Utilities.ObjectComparer.Tests
 {
-    public class CircularReferenceTests
+    public sealed class CircularReferenceTests
     {
         [Fact]
         public void CircularReferenceDoesNotCauseStackOverflow()

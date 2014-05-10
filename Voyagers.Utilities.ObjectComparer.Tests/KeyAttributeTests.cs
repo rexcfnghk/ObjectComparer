@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Voyagers.Utilities.ObjectComparer.Tests
 {
-    public class KeyAttributeTests
+    public sealed class KeyAttributeTests
     {
         private static IEnumerable<User> UserCollection1
         {

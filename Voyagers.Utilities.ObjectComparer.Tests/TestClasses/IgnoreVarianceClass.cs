@@ -3,7 +3,7 @@
 namespace Voyagers.Utilities.ObjectComparer.Tests.TestClasses
 {
     [IgnoreVariance]
-    public class IgnoreVarianceClass
+    internal class IgnoreVarianceClass
     {
         public int Id { get; set; }
 

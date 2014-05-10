@@ -2,7 +2,7 @@
 
 namespace Voyagers.Utilities.ObjectComparer.Tests.TestClasses
 {
-    public class PrimitivesHolder
+    internal class PrimitivesHolder
     {
         public int Int1 { get; set; }
 

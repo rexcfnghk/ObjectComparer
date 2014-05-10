@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Voyagers.Utilities.ObjectComparer.Tests.TestClasses
 {
-    public class UserWithRoleCollection
+    internal class UserWithRoleCollection
     {
         [Key]
         public int Id { get; set; }

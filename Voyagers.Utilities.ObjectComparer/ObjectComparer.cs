@@ -9,11 +9,11 @@ namespace Voyagers.Utilities.ObjectComparer
 {
     public static class ObjectComparer
     {
-        private static readonly HashSet<Tuple<object, object>> _traversedObjects;
+        private static readonly HashSet<Tuple<object, object>> TraversedObjects;
 
         static ObjectComparer()
         {
-            _traversedObjects = new HashSet<Tuple<object, object>>(new ObjectTupleEqualityComparer());
+            TraversedObjects = new HashSet<Tuple<object, object>>(new ObjectTupleEqualityComparer());
         }
 
         /// <summary>
@@ -47,13 +47,13 @@ namespace Voyagers.Utilities.ObjectComparer
                 return Enumerable.Empty<ObjectVariance>();
             }
 
-            // Empty _traversedObjects
-            _traversedObjects.Clear();
+            // Empty TraversedObjects
+            TraversedObjects.Clear();
 
             // ReSharper disable once PossibleNullReferenceException
             return object1.GetType() != object2.GetType()
                        ? new ObjectVariance("Type", object1, object2, null).Yield()
-                       : GetObjectVariances( object1, object2, null);
+                       : GetObjectVariances(object1, object2, null);
         }
 
         private static IEnumerable<ObjectVariance> GetObjectVariances(dynamic object1,
@@ -81,7 +81,7 @@ namespace Voyagers.Utilities.ObjectComparer
 
                 // Check if already traversed
                 if (!ReflectionHelper.IsPrimitiveOrString(object1) && !ReflectionHelper.IsPrimitiveOrString(object2) &&
-                    _traversedObjects.Contains(new Tuple<object, object>(object1, object2)))
+                    TraversedObjects.Contains(new Tuple<object, object>(object1, object2)))
                 {
                     yield break;
                 }
@@ -173,7 +173,7 @@ namespace Voyagers.Utilities.ObjectComparer
             }
 
             // Add to traversed HashSet
-            _traversedObjects.Add(new Tuple<object, object>(object1, object2));
+            TraversedObjects.Add(new Tuple<object, object>(object1, object2));
 
             // Compare by property
             foreach (

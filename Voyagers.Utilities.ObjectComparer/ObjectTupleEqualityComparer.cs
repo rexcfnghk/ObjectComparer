@@ -18,8 +18,8 @@ namespace Voyagers.Utilities.ObjectComparer
             unchecked
             {
                 int hashCode = 17;
-                hashCode = hashCode * 23 + obj.Item1.GetHashCode();
-                hashCode = hashCode * 23 + obj.Item2.GetHashCode();
+                hashCode = (hashCode * 23) + obj.Item1.GetHashCode();
+                hashCode = (hashCode * 23) + obj.Item2.GetHashCode();
                 return hashCode;
             }
         }

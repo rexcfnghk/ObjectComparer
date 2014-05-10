@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Voyagers.Utilities.ObjectComparer.Tests.TestClasses
 {
-    public class ClassWithTwoKeys
+    internal class ClassWithTwoKeys
     {
         [Key]
         public int Id { get; set; }

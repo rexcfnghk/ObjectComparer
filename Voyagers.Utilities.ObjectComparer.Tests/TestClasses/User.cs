@@ -3,7 +3,7 @@ using Voyagers.Utilities.ObjectComparer.Attributes;
 
 namespace Voyagers.Utilities.ObjectComparer.Tests.TestClasses
 {
-    public class User
+    internal class User
     {
         [Key]
         public int Id { get; set; }

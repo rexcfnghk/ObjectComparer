@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Voyagers.Utilities.ObjectComparer.Tests
 {
-    public class ObjectComparerTwoVariancesTest
+    public sealed class ObjectComparerTwoVariancesTest
     {
         [Fact]
         public void ClassWithTwoDifferencesShouldReturnTwoVariances()

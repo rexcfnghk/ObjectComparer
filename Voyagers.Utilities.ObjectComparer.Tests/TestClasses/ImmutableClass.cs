@@ -1,6 +1,6 @@
 ﻿namespace Voyagers.Utilities.ObjectComparer.Tests.TestClasses
 {
-    public class ImmutableClass
+    internal class ImmutableClass
     {
         private readonly int _int1;
         private readonly string _string1;

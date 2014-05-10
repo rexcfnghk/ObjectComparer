@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Voyagers.Utilities.ObjectComparer.Tests.TestClasses
 {
-    class IgnoreVarianceClassesHolder
+    internal class IgnoreVarianceClassesHolder
     {
         public IgnoreVarianceClass IgnoreVarianceClass { get; set; }
 
