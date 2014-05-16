@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Voyagers.Utilities.ObjectComparer
 {
@@ -18,8 +15,8 @@ namespace Voyagers.Utilities.ObjectComparer
             unchecked
             {
                 int hashCode = 17;
-                hashCode = (hashCode * 23) + obj.Item1.GetHashCode();
-                hashCode = (hashCode * 23) + obj.Item2.GetHashCode();
+                hashCode = (hashCode * 23) + (obj.Item1 == null ? 0 : obj.Item1.GetHashCode());
+                hashCode = (hashCode * 23) + (obj.Item2 == null ? 0 : obj.Item2.GetHashCode());
                 return hashCode;
             }
         }
