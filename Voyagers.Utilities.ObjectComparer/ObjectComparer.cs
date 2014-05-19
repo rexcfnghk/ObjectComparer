@@ -9,12 +9,8 @@ namespace Voyagers.Utilities.ObjectComparer
 {
     public static class ObjectComparer
     {
-        private static readonly HashSet<Tuple<object, object>> TraversedObjects;
-
-        static ObjectComparer()
-        {
-            TraversedObjects = new HashSet<Tuple<object, object>>(new ObjectTupleEqualityComparer());
-        }
+        private static readonly HashSet<object> TraversedObjects = new HashSet<object>();
+        private static readonly object TraversedObjectLock = new object();
 
         /// <summary>
         ///  Return object variances between two dynamic objects, serves as an entry point to all comparisons
@@ -81,7 +77,7 @@ namespace Voyagers.Utilities.ObjectComparer
 
                 // Check if already traversed
                 if (!ReflectionHelper.IsPrimitiveOrString(object1) && !ReflectionHelper.IsPrimitiveOrString(object2) &&
-                    TraversedObjects.Contains(new Tuple<object, object>(object1, object2)))
+                    AreBothObjectsTraversed(object1, object2))
                 {
                     yield break;
                 }
@@ -173,7 +169,11 @@ namespace Voyagers.Utilities.ObjectComparer
             }
 
             // Add to traversed HashSet
-            TraversedObjects.Add(new Tuple<object, object>(object1, object2));
+            lock (TraversedObjectLock)
+            {
+                TraversedObjects.Add(object1);
+                TraversedObjects.Add(object2);
+            }
 
             // Compare by property
             foreach (
@@ -277,6 +277,11 @@ namespace Voyagers.Utilities.ObjectComparer
                 // propertyName will be assigned "this[i]" when comparing by position or key.ToString() when comparing by key
                 string propertyName = key == null ? String.Format("this[{0}]", i) : key.ToString();
 
+                if (AreBothObjectsTraversed(value1List[i], value2List[i]))
+                {
+                    yield break;
+                }
+
                 // As a test variance for each element in the IEnumerable
                 var testParentVariance = new ObjectVariance(propertyName,
                                                             value1List[i],
@@ -311,12 +316,13 @@ namespace Voyagers.Utilities.ObjectComparer
                                                                               object object2,
                                                                               ObjectVariance parentVariance)
         {
-            // ReferenceEquals here in case T is ValueType
+            // ReferenceEquals instead of == because == may be overridden
             if (ReferenceEquals(object1, null))
             {
                 throw new ArgumentNullException("object1");
             }
 
+            // ReferenceEquals instead of == because == may be overridden
             if (ReferenceEquals(object2, null))
             {
                 throw new ArgumentNullException("object2");
@@ -344,6 +350,14 @@ namespace Voyagers.Utilities.ObjectComparer
                         yield return objectVariance;
                     }
                 }
+            }
+        }
+
+        private static bool AreBothObjectsTraversed(object object1, object object2)
+        {
+            lock (TraversedObjectLock)
+            {
+                return TraversedObjects.Contains(object1) && TraversedObjects.Contains(object2);
             }
         }
     }
