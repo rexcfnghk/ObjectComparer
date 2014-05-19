@@ -1,6 +1,6 @@
 ﻿namespace Voyagers.Utilities.ObjectComparer.Tests.TestClasses
 {
-    public class MutableClass
+    internal class MutableClass
     {
         public int Int1 { get; set; }
 

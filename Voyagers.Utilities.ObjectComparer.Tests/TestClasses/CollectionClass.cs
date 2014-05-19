@@ -2,7 +2,7 @@
 
 namespace Voyagers.Utilities.ObjectComparer.Tests.TestClasses
 {
-    class CollectionClass
+    internal class CollectionClass
     {
         public IEnumerable<int> Ints { get; set; }
 

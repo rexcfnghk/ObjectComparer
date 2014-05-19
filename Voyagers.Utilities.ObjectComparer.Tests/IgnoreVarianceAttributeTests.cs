@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Voyagers.Utilities.ObjectComparer.Tests
 {
-    public class IgnoreVarianceAttributeTests
+    public sealed class IgnoreVarianceAttributeTests
     {
         [Fact]
         public void DifferenceInPropertiesWithIgnoreVarianceAreIgnored()

@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Voyagers.Utilities.ObjectComparer.Tests
 {
-    public class ObjectComparerTests
+    public sealed class ObjectComparerTests
     {
         [Fact]
         public void TwoEqualIntsShouldReturnNoVariance()

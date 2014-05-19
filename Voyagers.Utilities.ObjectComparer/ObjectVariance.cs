@@ -43,6 +43,16 @@ namespace Voyagers.Utilities.ObjectComparer
             get { return _parentVariance; }
         }
 
+        public static bool operator ==(ObjectVariance left, ObjectVariance right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(ObjectVariance left, ObjectVariance right)
+        {
+            return !Equals(left, right);
+        }
+
         public bool Equals(ObjectVariance other)
         {
             if (ReferenceEquals(null, other))
@@ -90,16 +100,6 @@ namespace Voyagers.Utilities.ObjectComparer
                 hashCode = (hashCode * 23) + (_parentVariance != null ? _parentVariance.GetHashCode() : 0);
                 return hashCode;
             }
-        }
-
-        public static bool operator ==(ObjectVariance left, ObjectVariance right)
-        {
-            return Equals(left, right);
-        }
-
-        public static bool operator !=(ObjectVariance left, ObjectVariance right)
-        {
-            return !Equals(left, right);
         }
     }
 }
