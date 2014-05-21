@@ -48,7 +48,7 @@ namespace Voyagers.Utilities.ObjectComparer
             }
 
             propertyInfos = from prop in GetPropertyInfos(type)
-                            where Attribute.GetCustomAttribute(prop, typeof(KeyAttribute)) != null
+                            where Attribute.IsDefined(prop, typeof(KeyAttribute))
                             select prop;
             return propertyInfos.Any();
         }
@@ -63,7 +63,7 @@ namespace Voyagers.Utilities.ObjectComparer
             // Two scenarios here:
             // 1. IgnoreVarianceAttribute is applied on the property of the containing class
             // 2. IgnoreVarianceAttirubte is applied on the declaring type of the property
-            return propertyInfo.Any(pi => Attribute.GetCustomAttribute(pi, typeof(IgnoreVarianceAttribute)) != null ||
+            return propertyInfo.Any(pi => Attribute.IsDefined(pi, typeof(IgnoreVarianceAttribute)) ||
                                           HasIgnoreVarianceAttribute(pi.DeclaringType));
         }
 
@@ -79,7 +79,7 @@ namespace Voyagers.Utilities.ObjectComparer
                 throw new ArgumentNullException("type");
             }
 
-            return type.Any(t => Attribute.GetCustomAttribute(t, typeof(IgnoreVarianceAttribute)) != null);
+            return type.Any(t => Attribute.IsDefined(t, typeof(IgnoreVarianceAttribute)));
         }
 
         internal static IEnumerable<PropertyInfo> GetPropertyInfos(Type type)
