@@ -84,22 +84,35 @@ namespace Voyagers.Utilities.ObjectComparer
             // 1. IgnoreVarianceAttribute is applied on the property of the containing class
             // 2. IgnoreVarianceAttirubte is applied on the declaring type of the property
             if (propertyInfos.Any(pi => Attribute.IsDefined(pi, typeof(IgnoreVarianceAttribute)) ||
-                                          HasIgnoreVarianceAttribute(pi.DeclaringType)))
+                                        HasIgnoreVarianceAttribute(pi.DeclaringType)))
             {
                 return true;
             }
 
             // IgnoreVarianceAttribute is not declared on the type, search for MetadataTypeAttribute
-            return (from propertyInfo in propertyInfos
-                    let classType = propertyInfo.DeclaringType
-                    let metadataTypeAttributes =
-                        (MetadataTypeAttribute[])classType.GetCustomAttributes(typeof(MetadataTypeAttribute))
-                    where metadataTypeAttributes.Any()
-                    let metadataClassType = metadataTypeAttributes[0].MetadataClassType
-                    select metadataClassType.GetProperty(propertyInfo.Name)).Any(
-                        metadataClassPropertyInfo =>
-                        Attribute.IsDefined(metadataClassPropertyInfo, typeof(IgnoreVarianceAttribute)) ||
-                        HasIgnoreVarianceAttribute(metadataClassPropertyInfo.DeclaringType));
+            // Look for propertyInfos in the metadata class, if a metadata class exists
+            var metadataPropertyInfos = (from propertyInfo in propertyInfos
+                                         let metadataTypeAttributes =
+                                             (MetadataTypeAttribute[])
+                                             propertyInfo.DeclaringType.GetCustomAttributes(
+                                                 typeof(MetadataTypeAttribute))
+                                         where metadataTypeAttributes.Any()
+                                         let metadataProperty =
+                                             metadataTypeAttributes[0].MetadataClassType.GetProperty(propertyInfo.Name)
+                                         where metadataProperty != null
+                                         select metadataProperty).ToList();
+
+            // No propertyInfos exist, because no metadata classes exist
+            if (!metadataPropertyInfos.Any())
+            {
+                return false;
+            }
+
+            return
+                metadataPropertyInfos.Any(
+                    metadataClassPropertyInfo =>
+                    Attribute.IsDefined(metadataClassPropertyInfo, typeof(IgnoreVarianceAttribute)) ||
+                    HasIgnoreVarianceAttribute(metadataClassPropertyInfo.DeclaringType));
         }
 
         /// <summary>
