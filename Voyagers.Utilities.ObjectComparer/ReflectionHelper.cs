@@ -53,7 +53,7 @@ namespace Voyagers.Utilities.ObjectComparer
             return propertyInfos.Any();
         }
 
-        internal static bool HasIgnoreVarianceAttribute(PropertyInfo propertyInfo)
+        internal static bool HasIgnoreVarianceAttribute(params PropertyInfo[] propertyInfo)
         {
             if (propertyInfo == null)
             {
@@ -63,18 +63,23 @@ namespace Voyagers.Utilities.ObjectComparer
             // Two scenarios here:
             // 1. IgnoreVarianceAttribute is applied on the property of the containing class
             // 2. IgnoreVarianceAttirubte is applied on the declaring type of the property
-            return Attribute.GetCustomAttribute(propertyInfo, typeof(IgnoreVarianceAttribute)) != null ||
-                   HasIgnoreVarianceAttribute(propertyInfo.DeclaringType);
+            return propertyInfo.Any(pi => Attribute.GetCustomAttribute(pi, typeof(IgnoreVarianceAttribute)) != null ||
+                                          HasIgnoreVarianceAttribute(pi.DeclaringType));
         }
 
-        internal static bool HasIgnoreVarianceAttribute(Type type)
+        /// <summary>
+        /// Check if any property of a given Type array contains IgnoreVarianceAttribute
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        internal static bool HasIgnoreVarianceAttribute(params Type[] type)
         {
             if (type == null)
             {
                 throw new ArgumentNullException("type");
             }
 
-            return Attribute.GetCustomAttribute(type, typeof(IgnoreVarianceAttribute)) != null;
+            return type.Any(t => Attribute.GetCustomAttribute(t, typeof(IgnoreVarianceAttribute)) != null);
         }
 
         internal static IEnumerable<PropertyInfo> GetPropertyInfos(Type type)
@@ -106,14 +111,9 @@ namespace Voyagers.Utilities.ObjectComparer
             yield return item;
         }
 
-        internal static bool IsPrimitiveOrString(object o)
+        internal static bool IsPrimitiveOrString(params object[] objs)
         {
-            if (ReferenceEquals(o, null))
-            {
-                return false;
-            }
-
-            return o is string || o.GetType().IsPrimitive;
+            return objs != null && objs.All(o => !ReferenceEquals(o, null) && (o is string || o.GetType().IsPrimitive));
         }
     }
 }

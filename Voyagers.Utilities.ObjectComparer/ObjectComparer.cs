@@ -37,8 +37,7 @@ namespace Voyagers.Utilities.ObjectComparer
             Type object2Type = object2.GetType();
 
             // When one of the types have IgnoreVarianceAttribute on it
-            if (ReflectionHelper.HasIgnoreVarianceAttribute(object1Type) ||
-                ReflectionHelper.HasIgnoreVarianceAttribute(object2Type))
+            if (ReflectionHelper.HasIgnoreVarianceAttribute(object1Type, object2Type))
             {
                 return Enumerable.Empty<ObjectVariance>();
             }
@@ -63,8 +62,7 @@ namespace Voyagers.Utilities.ObjectComparer
             if (propertyInfo1 != null && propertyInfo2 != null && propertyInfo1.Name == propertyInfo2.Name)
             {
                 // Found IgnoreVarianceAttribute
-                if (ReflectionHelper.HasIgnoreVarianceAttribute(propertyInfo1) ||
-                    ReflectionHelper.HasIgnoreVarianceAttribute(propertyInfo2))
+                if (ReflectionHelper.HasIgnoreVarianceAttribute(propertyInfo1, propertyInfo2))
                 {
                     yield break;
                 }
@@ -76,7 +74,7 @@ namespace Voyagers.Utilities.ObjectComparer
                 object2 = (object2 as PropertyInfo).GetValue(parentVariance.PropertyValue2);
 
                 // Check if already traversed
-                if (!ReflectionHelper.IsPrimitiveOrString(object1) && !ReflectionHelper.IsPrimitiveOrString(object2) &&
+                if (!ReflectionHelper.IsPrimitiveOrString(object1, object2) &&
                     AreBothObjectsTraversed(object1, object2))
                 {
                     yield break;
@@ -337,8 +335,8 @@ namespace Voyagers.Utilities.ObjectComparer
                 while (propertyInfo1Enumerator.MoveNext() && propertyInfo2Enumerator.MoveNext())
                 {
                     // Found IgnoreVarianceAttribute
-                    if (ReflectionHelper.HasIgnoreVarianceAttribute(propertyInfo1Enumerator.Current) ||
-                        ReflectionHelper.HasIgnoreVarianceAttribute(propertyInfo2Enumerator.Current))
+                    if (ReflectionHelper.HasIgnoreVarianceAttribute(propertyInfo1Enumerator.Current,
+                                                                    propertyInfo2Enumerator.Current))
                     {
                         continue;
                     }
