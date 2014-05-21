@@ -60,7 +60,11 @@
     <Compile Include="CircularReferenceTests.cs" />
     <Compile Include="IgnoreVarianceAttributeTests.cs" />
     <Compile Include="KeyAttributeTests.cs" />
+    <Compile Include="MetadataTypeTests.cs" />
     <Compile Include="ObjectComaprerTwoVariancesTests.cs" />
+    <Compile Include="PartialClasses\Customer.cs" />
+    <Compile Include="PartialClasses\CustomerMetadata.cs" />
+    <Compile Include="PartialClasses\CustomerPartial.cs" />
     <Compile Include="TestClasses\ClassWithTwoKeys.cs" />
     <Compile Include="TestClasses\CollectionClass.cs" />
     <Compile Include="ObjectComparerTests.cs" />

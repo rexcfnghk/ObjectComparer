@@ -50,21 +50,56 @@ namespace Voyagers.Utilities.ObjectComparer
             propertyInfos = from prop in GetPropertyInfos(type)
                             where Attribute.IsDefined(prop, typeof(KeyAttribute))
                             select prop;
+            if (propertyInfos.Any())
+            {
+                return true;
+            }
+
+            // KeyAttribute is not declared on the type, search for MetadataTypeAttribute
+            var metadataTypeAttributes =
+                (MetadataTypeAttribute[])type.GetCustomAttributes(typeof(MetadataTypeAttribute));
+            if (!metadataTypeAttributes.Any())
+            {
+                return false;
+            }
+
+            propertyInfos = from metadataTypeAttribute in metadataTypeAttributes
+                            let metadataClassType = metadataTypeAttribute.MetadataClassType
+                            from propertyInfo in GetPropertyInfos(metadataClassType)
+                            let metadataClassPropertyInfo = metadataClassType.GetProperty(propertyInfo.Name)
+                            where Attribute.IsDefined(metadataClassPropertyInfo, typeof(KeyAttribute))
+                            select metadataClassPropertyInfo;
+
             return propertyInfos.Any();
         }
 
-        internal static bool HasIgnoreVarianceAttribute(params PropertyInfo[] propertyInfo)
+        internal static bool HasIgnoreVarianceAttribute(params PropertyInfo[] propertyInfos)
         {
-            if (propertyInfo == null)
+            if (propertyInfos == null)
             {
-                throw new ArgumentNullException("propertyInfo");
+                throw new ArgumentNullException("propertyInfos");
             }
 
             // Two scenarios here:
             // 1. IgnoreVarianceAttribute is applied on the property of the containing class
             // 2. IgnoreVarianceAttirubte is applied on the declaring type of the property
-            return propertyInfo.Any(pi => Attribute.IsDefined(pi, typeof(IgnoreVarianceAttribute)) ||
-                                          HasIgnoreVarianceAttribute(pi.DeclaringType));
+            if (propertyInfos.Any(pi => Attribute.IsDefined(pi, typeof(IgnoreVarianceAttribute)) ||
+                                          HasIgnoreVarianceAttribute(pi.DeclaringType)))
+            {
+                return true;
+            }
+
+            // IgnoreVarianceAttribute is not declared on the type, search for MetadataTypeAttribute
+            return (from propertyInfo in propertyInfos
+                    let classType = propertyInfo.DeclaringType
+                    let metadataTypeAttributes =
+                        (MetadataTypeAttribute[])classType.GetCustomAttributes(typeof(MetadataTypeAttribute))
+                    where metadataTypeAttributes.Any()
+                    let metadataClassType = metadataTypeAttributes[0].MetadataClassType
+                    select metadataClassType.GetProperty(propertyInfo.Name)).Any(
+                        metadataClassPropertyInfo =>
+                        Attribute.IsDefined(metadataClassPropertyInfo, typeof(IgnoreVarianceAttribute)) ||
+                        HasIgnoreVarianceAttribute(metadataClassPropertyInfo.DeclaringType));
         }
 
         /// <summary>
