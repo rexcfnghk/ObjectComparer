@@ -74,8 +74,7 @@ namespace Voyagers.Utilities.ObjectComparer
                 object2 = (object2 as PropertyInfo).GetValue(parentVariance.PropertyValue2);
 
                 // Check if already traversed
-                if (!ReflectionHelper.IsPrimitiveOrString(object1, object2) &&
-                    AreBothObjectsTraversed(object1, object2))
+                if (!ReflectionHelper.ShouldIgnoreVariance(object1, object2) && AreObjectsTraversed(object1, object2))
                 {
                     yield break;
                 }
@@ -112,7 +111,7 @@ namespace Voyagers.Utilities.ObjectComparer
             // there are two possibilities:
             // 1. object1 & object2 are properties to other types which can be further traversed
             // 2. object1 & object2 are top level objects
-            if ((object1Type.IsPrimitive && object2Type.IsPrimitive) || (object1 is string && object2 is string))
+            if (ReflectionHelper.ShouldIgnoreVariance(object1, object2))
             {
                 if (object1.Equals(object2))
                 {
@@ -275,7 +274,7 @@ namespace Voyagers.Utilities.ObjectComparer
                 // propertyName will be assigned "this[i]" when comparing by position or key.ToString() when comparing by key
                 string propertyName = key == null ? String.Format("this[{0}]", i) : key.ToString();
 
-                if (AreBothObjectsTraversed(value1List[i], value2List[i]))
+                if (AreObjectsTraversed(value1List[i], value2List[i]))
                 {
                     yield break;
                 }
@@ -351,11 +350,11 @@ namespace Voyagers.Utilities.ObjectComparer
             }
         }
 
-        private static bool AreBothObjectsTraversed(object object1, object object2)
+        private static bool AreObjectsTraversed(params object[] objs)
         {
             lock (TraversedObjectLock)
             {
-                return TraversedObjects.Contains(object1) && TraversedObjects.Contains(object2);
+                return objs.All(o => TraversedObjects.Contains(o));
             }
         }
     }

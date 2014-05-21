@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Voyagers.Utilities.ObjectComparer.Tests.TestClasses;
 using Xunit;
@@ -29,6 +30,24 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
             Assert.Null(variances[0].PropertyName);
             Assert.Equal(1, variances[0].PropertyValue1);
             Assert.Equal(2, variances[0].PropertyValue2);
+            Assert.Equal(null, variances[0].ParentVariance);
+        }
+
+        [Fact]
+        public void TwoDifferentDateTimesShouldReturnVariance()
+        {
+            // Arrange and Act
+            DateTime now = DateTime.Now;
+            DateTime nowPlusOneDay = now.AddDays(1);
+
+            List<ObjectVariance> variances = ObjectComparer.GetObjectVariances(now, nowPlusOneDay).ToList();
+
+            // Assert
+            Assert.NotEmpty(variances);
+            Assert.Equal(1, variances.Count);
+            Assert.Null(variances[0].PropertyName);
+            Assert.Equal(now, variances[0].PropertyValue1);
+            Assert.Equal(nowPlusOneDay, variances[0].PropertyValue2);
             Assert.Equal(null, variances[0].ParentVariance);
         }
 

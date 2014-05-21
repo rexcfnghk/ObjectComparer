@@ -111,9 +111,14 @@ namespace Voyagers.Utilities.ObjectComparer
             yield return item;
         }
 
-        internal static bool IsPrimitiveOrString(params object[] objs)
+        /// <summary>
+        /// Returns true if Type of obj is string, DateTime, or obj.GetType().IsPrimitive returns true
+        /// </summary>
+        /// <param name="objs"></param>
+        /// <returns></returns>
+        internal static bool ShouldIgnoreVariance(params object[] objs)
         {
-            return objs != null && objs.All(o => !ReferenceEquals(o, null) && (o is string || o.GetType().IsPrimitive));
+            return objs != null && objs.All(o => !ReferenceEquals(o, null) && (o is string || o is DateTime || o.GetType().IsPrimitive));
         }
     }
 }
