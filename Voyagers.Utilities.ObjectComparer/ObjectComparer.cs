@@ -32,7 +32,6 @@ namespace Voyagers.Utilities.ObjectComparer
                 return variances;
             }
 
-            // ReSharper disable once PossibleNullReferenceException
             Type object1Type = object1.GetType();
             Type object2Type = object2.GetType();
 
@@ -298,7 +297,7 @@ namespace Voyagers.Utilities.ObjectComparer
             var propertyInfo2 = object2 as PropertyInfo;
 
             // One of the objects is null
-            if (propertyInfo1 != null && ReferenceEquals(propertyInfo1.GetValue(parentVariance.PropertyValue1), null))
+            if (ReferenceEquals(object1, null) || (propertyInfo1 != null && ReferenceEquals(propertyInfo1.GetValue(parentVariance.PropertyValue1), null)))
             {
                 // object2 is a PropertyInfo
                 if (propertyInfo2 != null)
@@ -313,7 +312,7 @@ namespace Voyagers.Utilities.ObjectComparer
                 yield break;
             }
 
-            if (propertyInfo2 != null && ReferenceEquals(propertyInfo2.GetValue(parentVariance.PropertyValue2), null))
+            if (ReferenceEquals(object2, null) || (propertyInfo2 != null && ReferenceEquals(propertyInfo2.GetValue(parentVariance.PropertyValue2), null)))
             {
                 // object1 is a PropertyInfo
                 if (propertyInfo1 != null)
@@ -324,7 +323,7 @@ namespace Voyagers.Utilities.ObjectComparer
                 }
 
                 // object1 is a primitive or string, or DateTime
-                yield return new ObjectVariance(null, null, object2, parentVariance);
+                yield return new ObjectVariance(null, object1, null, parentVariance);
             }
         }
 
