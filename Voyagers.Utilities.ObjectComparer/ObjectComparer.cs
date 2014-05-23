@@ -26,7 +26,7 @@ namespace Voyagers.Utilities.ObjectComparer
             }
 
             // In case one of the objects is null
-            IEnumerable<ObjectVariance> variances = CheckNullObjectsVariance(object1, object2);
+            IEnumerable<ObjectVariance> variances = CheckNullObjectsVariance(object1, object2, null);
             if (variances.Any())
             {
                 return variances;
@@ -86,19 +86,16 @@ namespace Voyagers.Utilities.ObjectComparer
                 yield break;
             }
 
-            // Null checks, subsituting objectVariance.PropertyName with propertyName if it is an inner level null check
+            // Null checks, two scenarios
+            // 1. It is a propertyInfo that can be further traversed
+            // 2. It is a top level object
+            object nullCheck1 = propertyInfo1 ?? object1;
+            object nullCheck2 = propertyInfo2 ?? object2;
             foreach (
-                ObjectVariance objectVariance in CheckNullObjectsVariance(object1, object2))
+                ObjectVariance objectVariance in CheckNullObjectsVariance(nullCheck1, nullCheck2, parentVariance))
             {
                 // ReSharper disable once PossibleNullReferenceException
-                yield return
-                    new ObjectVariance(objectVariance.PropertyName,
-                                       objectVariance.PropertyValue1,
-                                       objectVariance.PropertyValue2,
-                                       new ObjectVariance(propertyName,
-                                                          parentVariance.PropertyValue1,
-                                                          parentVariance.PropertyValue2,
-                                                          null));
+                yield return objectVariance;
                 yield break;
             }
 
@@ -294,18 +291,40 @@ namespace Voyagers.Utilities.ObjectComparer
         }
       
         private static IEnumerable<ObjectVariance> CheckNullObjectsVariance(object object1,
-                                                                            object object2)
+                                                                            object object2,
+                                                                            ObjectVariance parentVariance)
         {
+            var propertyInfo1 = object1 as PropertyInfo;
+            var propertyInfo2 = object2 as PropertyInfo;
+
             // One of the objects is null
-            if (ReferenceEquals(object1, null))
+            if (propertyInfo1 != null && ReferenceEquals(propertyInfo1.GetValue(parentVariance.PropertyValue1), null))
             {
-                yield return new ObjectVariance("value", null, object2, null);
+                // object2 is a PropertyInfo
+                if (propertyInfo2 != null)
+                {
+                    object property2Value = propertyInfo2.GetValue(parentVariance.PropertyValue2);
+                    yield return new ObjectVariance(propertyInfo2.Name, null, property2Value, parentVariance);
+                    yield break;
+                }
+
+                // object2 is a primitive or string, or DateTime
+                yield return new ObjectVariance(null, null, object2, parentVariance);
                 yield break;
             }
 
-            if (ReferenceEquals(object2, null))
+            if (propertyInfo2 != null && ReferenceEquals(propertyInfo2.GetValue(parentVariance.PropertyValue2), null))
             {
-                yield return new ObjectVariance("value", object1, null, null);
+                // object1 is a PropertyInfo
+                if (propertyInfo1 != null)
+                {
+                    object property1Value = propertyInfo1.GetValue(parentVariance.PropertyValue1);
+                    yield return new ObjectVariance(propertyInfo1.Name, property1Value, null, parentVariance);
+                    yield break;
+                }
+
+                // object1 is a primitive or string, or DateTime
+                yield return new ObjectVariance(null, null, object2, parentVariance);
             }
         }
 
