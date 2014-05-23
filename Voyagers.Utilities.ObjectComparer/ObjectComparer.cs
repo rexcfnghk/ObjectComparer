@@ -9,7 +9,7 @@ namespace Voyagers.Utilities.ObjectComparer
 {
     public static class ObjectComparer
     {
-        private static readonly HashSet<object> TraversedObjects = new HashSet<object>();
+        private static readonly ICollection<object> TraversedObjects = new HashSet<object>();
         private static readonly object TraversedObjectLock = new object();
 
         /// <summary>
@@ -32,6 +32,7 @@ namespace Voyagers.Utilities.ObjectComparer
                 return variances;
             }
 
+            // ReSharper disable once PossibleNullReferenceException
             Type object1Type = object1.GetType();
             Type object2Type = object2.GetType();
 
