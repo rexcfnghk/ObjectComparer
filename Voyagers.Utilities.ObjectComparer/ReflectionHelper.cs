@@ -63,6 +63,8 @@ namespace Voyagers.Utilities.ObjectComparer
                 return false;
             }
 
+            // MetadataAttribute exists on the type, find its metadata class and check if KeyAttribute exists
+            // on any properties in the metadata class
             propertyInfos = from metadataTypeAttribute in metadataTypeAttributes
                             let metadataClassType = metadataTypeAttribute.MetadataClassType
                             from propertyInfo in GetPropertyInfos(metadataClassType)
@@ -108,11 +110,11 @@ namespace Voyagers.Utilities.ObjectComparer
                 return false;
             }
 
-            return
-                metadataPropertyInfos.Any(
-                    metadataClassPropertyInfo =>
-                    Attribute.IsDefined(metadataClassPropertyInfo, typeof(IgnoreVarianceAttribute)) ||
-                    HasIgnoreVarianceAttribute(metadataClassPropertyInfo.DeclaringType));
+            return (from metadataPropertyInfo in metadataPropertyInfos
+                    where
+                        Attribute.IsDefined(metadataPropertyInfo, typeof(IgnoreVarianceAttribute)) ||
+                        HasIgnoreVarianceAttribute(metadataPropertyInfo.DeclaringType)
+                    select metadataPropertyInfo).Any();
         }
 
         /// <summary>
@@ -138,9 +140,9 @@ namespace Voyagers.Utilities.ObjectComparer
             }
 
             // Skip indexers using p.GetIndexParameters().Length == 0
-            return
-                type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                    .Where(p => p.CanRead && p.GetIndexParameters().Length == 0);
+            return from prop in type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                   where prop.CanRead && prop.GetIndexParameters().Length == 0
+                   select prop;
         }
 
         /// <summary>
@@ -166,7 +168,8 @@ namespace Voyagers.Utilities.ObjectComparer
         /// <returns></returns>
         internal static bool ShouldIgnoreVariance(params object[] objs)
         {
-            return objs != null && objs.All(o => !ReferenceEquals(o, null) && (o is string || o is DateTime || o.GetType().IsPrimitive));
+            return objs != null &&
+                   objs.All(o => !ReferenceEquals(o, null) && (o is string || o is DateTime || o.GetType().IsPrimitive));
         }
     }
 }
