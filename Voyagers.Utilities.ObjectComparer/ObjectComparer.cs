@@ -18,7 +18,7 @@ namespace Voyagers.Utilities.ObjectComparer
         /// <param name="object1"></param>
         /// <param name="object2"></param>
         /// <returns>IEnumerable&lt;ObjectVariance&gt; that contains all differences</returns>
-        public static IEnumerable<ObjectVariance> GetObjectVariances(dynamic object1, dynamic object2)
+        public static IEnumerable<ObjectVariance> GetObjectVariances(object object1, object object2)
         {
             if (ReferenceEquals(object1, null) && ReferenceEquals(object2, null))
             {
@@ -26,7 +26,7 @@ namespace Voyagers.Utilities.ObjectComparer
             }
 
             // In case one of the objects is null
-            IEnumerable<ObjectVariance> variances = CheckNullObjectsVariance(object1, object2, null);
+            List<ObjectVariance> variances = CheckNullObjectsVariance(object1, object2, null).ToList();
             if (variances.Any())
             {
                 return variances;
@@ -51,8 +51,8 @@ namespace Voyagers.Utilities.ObjectComparer
                        : GetObjectVariances(object1, object2, null);
         }
 
-        private static IEnumerable<ObjectVariance> GetObjectVariances(dynamic object1,
-                                                                      dynamic object2,
+        private static IEnumerable<ObjectVariance> GetObjectVariances(object object1,
+                                                                      object object2,
                                                                       ObjectVariance parentVariance)
         {
             // Base case where object1 and object2 are PropertyInfo objects already
@@ -146,12 +146,12 @@ namespace Voyagers.Utilities.ObjectComparer
                 IEnumerable<PropertyInfo> propertyInfos;
                 IEnumerable<ObjectVariance> result = ReflectionHelper.TryGetKeyAttriubte(object1GenericArgument,
                                                                                          out propertyInfos)
-                                                         ? GetEnumerableVariancesByKey(object1,
-                                                                                       object2,
+                                                         ? GetEnumerableVariancesByKey(object1 as IEnumerable,
+                                                                                       object2 as IEnumerable,
                                                                                        propertyInfos,
                                                                                        parentVariance)
-                                                         : GetEnumerableVariancesByPosition(object1,
-                                                                                            object2,
+                                                         : GetEnumerableVariancesByPosition(object1 as IEnumerable,
+                                                                                            object2 as IEnumerable,
                                                                                             parentVariance);
                 foreach (ObjectVariance objectVariance in result)
                 {
