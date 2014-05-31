@@ -5,9 +5,10 @@ using System.Linq.Dynamic;
 
 namespace Voyagers.Utilities.ObjectComparer
 {
-    public static class KeyPropertiesComparer
+    internal static class KeyPropertiesComparer
     {
-        public static IEnumerable<ObjectVariance> GetSetDifferenceVariances(IQueryable query1,
+        public static IEnumerable<ObjectVariance> GetSetDifferenceVariances(
+                                                                            IQueryable query1,
                                                                             IQueryable query2,
                                                                             ObjectVariance parentVariance)
         {

@@ -205,7 +205,6 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
 
             Assert.Null(variances[1].ParentVariance.ParentVariance);
 
-
             Assert.Equal("Bar", variances[2].PropertyValue1);
             Assert.Equal("Test", variances[2].PropertyValue2);
             Assert.Equal("Name", variances[2].PropertyName);

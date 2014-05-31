@@ -148,9 +148,9 @@ namespace Voyagers.Utilities.ObjectComparer
         /// <summary>
         /// Convert item of type <typeparam name="T">T</typeparam> to IEnumerable&lt;<typeparam name="T">T</typeparam>&gt;
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="item"></param>
-        /// <returns></returns>
+        /// <typeparam name="T">Generic argument for IEnumerable</typeparam>
+        /// <param name="item">Item that is being yielded</param>
+        /// <returns>An IEnumerable of T</returns>
         internal static IEnumerable<T> Yield<T>(this T item)
         {
             if (ReferenceEquals(item, null))
@@ -164,8 +164,8 @@ namespace Voyagers.Utilities.ObjectComparer
         /// <summary>
         /// Returns true if Type of obj is string, DateTime, or obj.GetType().IsPrimitive returns true
         /// </summary>
-        /// <param name="objs"></param>
-        /// <returns></returns>
+        /// <param name="objs">Objs params array</param>
+        /// <returns>True or False</returns>
         internal static bool ShouldIgnoreVariance(params object[] objs)
         {
             return objs != null &&
