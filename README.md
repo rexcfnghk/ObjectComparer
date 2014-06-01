@@ -7,7 +7,7 @@ Features
 --------
 * Supports deep object comparisons
 * Supports [`KeyAttribute`](http://msdn.microsoft.com/en-us/library/system.componentmodel.dataannotations.keyattribute(v=vs.110).aspx) (If found, `IEnumerable<TEntity>` comparisons will be key-based instead of position-based)
-* Supports [`MetadataTypeAttribute`](http://msdn.microsoft.com/en-us/library/system.componentmodel.dataannotations.metadatatypeattribute(v=vs.110).aspx) (If found, `ObjectComparer` will take into consideration of your `MetadataType` class)
+* Supports [`MetadataTypeAttribute`](http://msdn.microsoft.com/en-us/library/system.componentmodel.dataannotations.metadatatypeattribute(v=vs.110).aspx) (If found, `ObjectComparer` will take into consideration of your `Metadata` `partial` class)
 * Supports `IgnoreVarianceAttribute`
     * If found on a property, it will ignore variances on that property and stop traversing further
     * If found on a class definition, it will ignore variances on the entire class
