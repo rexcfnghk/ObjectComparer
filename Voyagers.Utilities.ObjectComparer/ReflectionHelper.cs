@@ -25,11 +25,11 @@ namespace Voyagers.Utilities.ObjectComparer
             }
 
             // Check whether type implements IEnumerable<T> first
-            Type ienumerableType = type.GetInterfaces()
-                                       .FirstOrDefault(
-                                           interfaceType =>
-                                           interfaceType.IsGenericType &&
-                                           interfaceType.GetGenericTypeDefinition() == typeof(IEnumerable<>));
+            Type ienumerableType = (from interfaceType in type.GetInterfaces()
+                                    where
+                                        interfaceType.IsGenericType &&
+                                        interfaceType.GetGenericTypeDefinition() == typeof(IEnumerable<>)
+                                    select interfaceType).FirstOrDefault();
             genericArgument = ienumerableType != null ? ienumerableType.GetGenericArguments()[0] : null;
             return genericArgument != null;
         }
