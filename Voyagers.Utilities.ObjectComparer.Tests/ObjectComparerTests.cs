@@ -30,7 +30,34 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
             Assert.Null(variances[0].PropertyName);
             Assert.Equal(1, variances[0].PropertyValue1);
             Assert.Equal(2, variances[0].PropertyValue2);
-            Assert.Equal(null, variances[0].ParentVariance);
+            Assert.Null(variances[0].ParentVariance);
+        }
+
+        [Fact]
+        public void TwoEqualDecimalsShouldReturnNoVariance()
+        {
+            // Arrange and Act
+            IEnumerable<ObjectVariance> variances = ObjectComparer.GetObjectVariances(.1m, .1m);
+
+            // Assert
+            Assert.Empty(variances);
+        }
+
+        [Fact]
+        public void TwoDifferentDecimalsShouldReturnVariance()
+        {
+            // Arange and Act
+            List<ObjectVariance> variances = ObjectComparer.GetObjectVariances(1.1m, 2.2m).ToList();
+
+            // Assert
+            Assert.NotEmpty(variances);
+            Assert.Equal(1, variances.Count);
+            Assert.Null(variances[0].PropertyName);
+            Assert.Equal(1.1m, variances[0].PropertyValue1);
+            Assert.Equal(2.2m, variances[0].PropertyValue2);
+            Assert.IsNotType<double>(variances[0].PropertyValue1);
+            Assert.IsNotType<double>(variances[0].PropertyValue2);
+            Assert.Null(variances[0].ParentVariance);
         }
 
         [Fact]

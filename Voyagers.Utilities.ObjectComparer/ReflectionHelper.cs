@@ -169,7 +169,12 @@ namespace Voyagers.Utilities.ObjectComparer
         internal static bool ShouldIgnoreVariance(params object[] objs)
         {
             return objs != null &&
-                   objs.All(o => !ReferenceEquals(o, null) && (o is string || o is DateTime || o.GetType().IsPrimitive));
+                   objs.All(o => !(ReferenceEquals(o, null) || o.CanBeFurtherTraversed()));
+        }
+
+        internal static bool CanBeFurtherTraversed(this object o)
+        {
+            return !(o is string || o is DateTime || o is decimal || o.GetType().IsPrimitive);
         }
     }
 }
