@@ -61,6 +61,25 @@ namespace Voyagers.Utilities.ObjectComparer.Tests
         }
 
         [Fact]
+        public void TwoDifferentGuidsShouldReturnVariance()
+        {
+            // Arrange
+            var guid1 = Guid.NewGuid();
+            var guid2 = Guid.NewGuid();
+
+            // Act
+            List<ObjectVariance> variances = ObjectComparer.GetObjectVariances(guid1, guid2).ToList();
+
+            // Assert
+            Assert.NotEmpty(variances);
+            Assert.Equal(1, variances.Count);
+            Assert.Null(variances[0].PropertyName);
+            Assert.Equal(guid1, variances[0].PropertyValue1);
+            Assert.Equal(guid2, variances[0].PropertyValue2);
+            Assert.Null(variances[0].ParentVariance);
+        }
+
+        [Fact]
         public void TwoDifferentDateTimesShouldReturnVariance()
         {
             // Arrange and Act

@@ -162,19 +162,24 @@ namespace Voyagers.Utilities.ObjectComparer
         }
 
         /// <summary>
-        /// Returns true if Type of obj is string, DateTime, or obj.GetType().IsPrimitive returns true
+        /// Returns true if Type of obj is a simple type, thus cannot be further traversed
         /// </summary>
         /// <param name="objs">Objs params array</param>
         /// <returns>True or False</returns>
         internal static bool ShouldIgnoreVariance(params object[] objs)
         {
             return objs != null &&
-                   objs.All(o => !(ReferenceEquals(o, null) || o.CanBeFurtherTraversed()));
+                   objs.All(o => !(ReferenceEquals(o, null) || o.GetType().CanBeFurtherTraversed()));
         }
 
-        internal static bool CanBeFurtherTraversed(this object o)
+        internal static bool CanBeFurtherTraversed(this Type t)
         {
-            return !(o is string || o is DateTime || o is decimal || o.GetType().IsPrimitive);
+            Type[] simpleTypes =
+            {
+                typeof(string), typeof(decimal), typeof(DateTime), typeof(DateTimeOffset),
+                typeof(TimeSpan), typeof(Guid)
+            };
+            return !(t.IsPrimitive || simpleTypes.Contains(t));
         }
     }
 }
