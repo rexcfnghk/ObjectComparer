@@ -125,23 +125,17 @@ publish/
 # Publish Web Output
 *.[Pp]ublish.xml
 *.azurePubxml
-## TODO: Comment the next line if you want to checkin your
-## web deploy settings but do note that will include unencrypted
-## passwords
+# TODO: Comment out the next line if you want to keep your passwords hidden
 *.pubxml
 
 # NuGet Packages
-packages/*
 *.nupkg
-## TODO: If the tool you use requires repositories.config
-## uncomment the next line
-#!packages/repositories.config
-
-# Enable "build/" folder in the NuGet Packages folder since
-# NuGet packages use it for MSBuild targets.
-# This line needs to be after the ignore of the build folder
-# (and the packages folder if the line above has been uncommented)
-!packages/build/
+# The packages folder can be ignored because of Package Restore
+**/packages/*
+# except build/, which is used as an MSBuild target.
+!**/packages/build/
+# If using the old MSBuild-Integrated Package Restore, uncomment this:
+#!**/packages/repositories.config
 
 # Windows Azure Build Output
 csx/

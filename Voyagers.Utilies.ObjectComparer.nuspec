@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Voyagers.Utilies.ObjectComparer</id>
+    <version>1.0.0</version>
+    <authors>rexng</authors>
+    <owners>rexng</owners>
+    <licenseUrl>https://github.com/rexcfnghk/ObjectComparer/blob/master/LICENSE.txt</licenseUrl>
+    <projectUrl>https://github.com/rexcfnghk/ObjectComparer</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>ObjectComparer library that compares and reports the differences between two .NET objects. It is made to specifically cater for comparisons between two entities using Entity Framework.</description>
+    <releaseNotes>See https://github.com/rexcfnghk/ObjectComparer/releases/tag/v1.0.0</releaseNotes>
+    <copyright>Copyright 2014</copyright>
+    <tags>CompareObjects Utilities</tags>
+    <dependencies>
+      <dependency id="System.Linq.Dynamic" version="1.0" />
+    </dependencies>
+  </metadata>
+</package>
