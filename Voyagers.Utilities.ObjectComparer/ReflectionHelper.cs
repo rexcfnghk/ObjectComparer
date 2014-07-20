@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Reflection;
 using Voyagers.Utilities.ObjectComparer.Attributes;
@@ -19,10 +20,7 @@ namespace Voyagers.Utilities.ObjectComparer
         /// <returns></returns>
         internal static bool TryGetIEnumerableGenericArgument(Type type, out Type genericArgument)
         {
-            if (type == null)
-            {
-                throw new ArgumentNullException("type");
-            }
+            Contract.Requires<ArgumentNullException>(type != null);
 
             // Check whether type implements IEnumerable<T> first
             Type ienumerableType = (from interfaceType in type.GetInterfaces()
@@ -42,10 +40,7 @@ namespace Voyagers.Utilities.ObjectComparer
         /// <returns></returns>
         internal static bool TryGetKeyAttriubte(Type type, out IEnumerable<PropertyInfo> propertyInfos)
         {
-            if (type == null)
-            {
-                throw new ArgumentNullException("type");
-            }
+            Contract.Requires<ArgumentNullException>(type != null);
 
             propertyInfos = from prop in GetPropertyInfos(type)
                             where Attribute.IsDefined(prop, typeof(KeyAttribute))
@@ -77,10 +72,7 @@ namespace Voyagers.Utilities.ObjectComparer
 
         internal static bool HasIgnoreVarianceAttribute(params PropertyInfo[] propertyInfos)
         {
-            if (propertyInfos == null)
-            {
-                throw new ArgumentNullException("propertyInfos");
-            }
+            Contract.Requires<ArgumentNullException>(propertyInfos != null);
 
             // Two scenarios here:
             // 1. IgnoreVarianceAttribute is applied on the property of the containing class
@@ -124,20 +116,13 @@ namespace Voyagers.Utilities.ObjectComparer
         /// <returns></returns>
         internal static bool HasIgnoreVarianceAttribute(params Type[] type)
         {
-            if (type == null)
-            {
-                throw new ArgumentNullException("type");
-            }
-
+            Contract.Requires<ArgumentNullException>(type != null);
             return type.Any(t => Attribute.IsDefined(t, typeof(IgnoreVarianceAttribute)));
         }
 
         internal static IEnumerable<PropertyInfo> GetPropertyInfos(Type type)
         {
-            if (type == null)
-            {
-                throw new ArgumentNullException("type");
-            }
+            Contract.Requires<ArgumentNullException>(type != null);
 
             // Skip indexers using p.GetIndexParameters().Length == 0
             return from prop in type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
@@ -153,11 +138,7 @@ namespace Voyagers.Utilities.ObjectComparer
         /// <returns>An IEnumerable of T</returns>
         internal static IEnumerable<T> Yield<T>(this T item)
         {
-            if (ReferenceEquals(item, null))
-            {
-                throw new ArgumentNullException("item");
-            }
-
+            Contract.Requires<ArgumentNullException>(!ReferenceEquals(item, null));
             yield return item;
         }
 

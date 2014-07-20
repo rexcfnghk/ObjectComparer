@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Linq.Dynamic;
 using System.Reflection;
@@ -371,6 +372,7 @@ namespace Voyagers.Utilities.ObjectComparer
 
         private static bool AreObjectsTraversed(params object[] objs)
         {
+            Contract.Requires<ArgumentNullException>(objs != null);
             lock (TraversedObjectLock)
             {
                 return objs.All(o => TraversedObjects.Contains(o));
