@@ -155,6 +155,8 @@ namespace Voyagers.Utilities.ObjectComparer
 
         internal static bool CanBeFurtherTraversed(this Type t)
         {
+            Contract.Requires<ArgumentNullException>(t != null);
+
             Type[] simpleTypes =
             {
                 typeof(string), typeof(decimal), typeof(DateTime), typeof(DateTimeOffset),
