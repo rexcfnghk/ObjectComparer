@@ -11,7 +11,7 @@ namespace Voyagers.Utilities.ObjectComparer
     internal static class ReflectionHelper
     {
         /// <summary>
-        /// Returns if <param name="type">type</param> 
+        /// Returns if <param name="type">types</param> 
         /// implements IEnumerable&lt;T&gt;, and <param name="genericArgument"></param> containing 
         /// the generic argument of IEnumerable&lt;T&gt;
         /// </summary>
@@ -112,12 +112,15 @@ namespace Voyagers.Utilities.ObjectComparer
         /// <summary>
         /// Check if any property of a given Type array contains IgnoreVarianceAttribute
         /// </summary>
-        /// <param name="type"></param>
+        /// <param name="types"></param>
         /// <returns></returns>
-        internal static bool HasIgnoreVarianceAttribute(params Type[] type)
+        internal static bool HasIgnoreVarianceAttribute(params Type[] types)
         {
-            Contract.Requires<ArgumentNullException>(type != null);
-            return type.Any(t => Attribute.IsDefined(t, typeof(IgnoreVarianceAttribute)));
+            Contract.Requires<ArgumentNullException>(types != null);
+
+            return (from t in types
+                    where Attribute.IsDefined(t, typeof(IgnoreVarianceAttribute))
+                    select t).Any();
         }
 
         internal static IEnumerable<PropertyInfo> GetPropertyInfos(Type type)
@@ -159,8 +162,12 @@ namespace Voyagers.Utilities.ObjectComparer
 
             Type[] simpleTypes =
             {
-                typeof(string), typeof(decimal), typeof(DateTime), typeof(DateTimeOffset),
-                typeof(TimeSpan), typeof(Guid)
+                typeof(string), 
+                typeof(decimal), 
+                typeof(DateTime), 
+                typeof(DateTimeOffset),
+                typeof(TimeSpan), 
+                typeof(Guid)
             };
             return !(t.IsPrimitive || simpleTypes.Contains(t));
         }

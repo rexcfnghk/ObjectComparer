@@ -7,8 +7,7 @@ namespace Voyagers.Utilities.ObjectComparer
 {
     internal static class KeyPropertiesComparer
     {
-        public static IEnumerable<ObjectVariance> GetSetDifferenceVariances(
-                                                                            IQueryable query1,
+        public static IEnumerable<ObjectVariance> GetSetDifferenceVariances(IQueryable query1,
                                                                             IQueryable query2,
                                                                             ObjectVariance parentVariance)
         {
