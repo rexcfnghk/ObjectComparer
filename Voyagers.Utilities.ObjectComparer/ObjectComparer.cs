@@ -44,7 +44,10 @@ namespace Voyagers.Utilities.ObjectComparer
             }
 
             // Empty TraversedObjects
-            TraversedObjects.Clear();
+            lock (TraversedObjectLock)
+            {
+                TraversedObjects.Clear();
+            }
 
             // ReSharper disable once PossibleNullReferenceException
             return object1.GetType() != object2.GetType()
