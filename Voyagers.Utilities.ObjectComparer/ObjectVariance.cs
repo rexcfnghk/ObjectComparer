@@ -5,7 +5,7 @@ namespace Voyagers.Utilities.ObjectComparer
     /// <summary>
     /// Immutable class that represents a variance in the values of the objects
     /// </summary>
-    public class ObjectVariance : IEquatable<ObjectVariance>
+    public class ObjectVariance : IObjectVariance
     {
         private readonly string _propertyName;
         private readonly object _propertyValue1;
