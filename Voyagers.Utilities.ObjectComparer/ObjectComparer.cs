@@ -74,8 +74,8 @@ namespace Voyagers.Utilities.ObjectComparer
                 propertyName = propertyInfo1.Name;
 
                 // ReSharper disable once PossibleNullReferenceException
-                object1 = (object1 as PropertyInfo).GetValue(parentVariance.PropertyValue1);
-                object2 = (object2 as PropertyInfo).GetValue(parentVariance.PropertyValue2);
+                object1 = ((PropertyInfo)object1).GetValue(parentVariance.PropertyValue1);
+                object2 = ((PropertyInfo)object2).GetValue(parentVariance.PropertyValue2);
 
                 // Check if already traversed
                 if (!ReflectionHelper.ShouldIgnoreVariance(object1, object2) && AreObjectsTraversed(object1, object2))
@@ -293,7 +293,7 @@ namespace Voyagers.Utilities.ObjectComparer
                 }
             }
         }
-      
+
         private static IEnumerable<ObjectVariance> CheckNullObjectsVariance(object object1,
                                                                             object object2,
                                                                             ObjectVariance parentVariance)
@@ -317,19 +317,22 @@ namespace Voyagers.Utilities.ObjectComparer
                 yield break;
             }
 
-            if (ReferenceEquals(object2, null) || (propertyInfo2 != null && ReferenceEquals(propertyInfo2.GetValue(parentVariance.PropertyValue2), null)))
+            if (!ReferenceEquals(object2, null) &&
+                (propertyInfo2 == null || !ReferenceEquals(propertyInfo2.GetValue(parentVariance.PropertyValue2), null)))
             {
-                // object1 is a PropertyInfo
-                if (propertyInfo1 != null)
-                {
-                    object property1Value = propertyInfo1.GetValue(parentVariance.PropertyValue1);
-                    yield return new ObjectVariance(propertyInfo1.Name, property1Value, null, parentVariance);
-                    yield break;
-                }
-
-                // object1 is a primitive or string, or DateTime
-                yield return new ObjectVariance(null, object1, null, parentVariance);
+                yield break;
             }
+
+            // object1 is a PropertyInfo
+            if (propertyInfo1 != null)
+            {
+                object property1Value = propertyInfo1.GetValue(parentVariance.PropertyValue1);
+                yield return new ObjectVariance(propertyInfo1.Name, property1Value, null, parentVariance);
+                yield break;
+            }
+
+            // object1 is a primitive or string, or DateTime
+            yield return new ObjectVariance(null, object1, null, parentVariance);
         }
 
         private static IEnumerable<ObjectVariance> GetVariancesFromProperties(object object1,
@@ -378,7 +381,7 @@ namespace Voyagers.Utilities.ObjectComparer
             Contract.Requires<ArgumentNullException>(objs != null);
             lock (TraversedObjectLock)
             {
-                return objs.All(o => TraversedObjects.Contains(o));
+                return objs.All(TraversedObjects.Contains);
             }
         }
     }
