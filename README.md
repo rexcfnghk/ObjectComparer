@@ -1,4 +1,4 @@
-ObjectComparer
+ObjectComparer <img src="https://travis-ci.org/rexcfnghk/ObjectComparer.svg?branch=master" alt="Travis CI status">
 =================================
 
 ObjectComparer library that compares and reports the differences between two .NET objects. It is made to specifically cater for  comparisons between two entities using [Entity Framework](http://msdn.microsoft.com/en-us/data/ef.aspx)
