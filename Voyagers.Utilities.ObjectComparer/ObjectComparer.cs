@@ -197,11 +197,11 @@ namespace Voyagers.Utilities.ObjectComparer
             //                         Compared => Boolean flag for determining whether we can skip comparisons or not
             IQueryable query1 =
                 enumerable1.AsQueryable()
-                           .GroupBy(String.Format("new ({0})", propertyNames), "it")
+                           .GroupBy($"new ({propertyNames})", "it")
                            .Select("new (it.Key, it.Count() as Count, it as Value, false as Compared)");
             IQueryable query2 =
                 enumerable2.AsQueryable()
-                           .GroupBy(String.Format("new ({0})", propertyNames), "it")
+                           .GroupBy($"new ({propertyNames})", "it")
                            .Select("new (it.Key, it.Count() as Count, it as Value, false as Compared)");
 
             // Make sure if query1 contains more items than query2, or vice versa, can be detected
@@ -259,7 +259,7 @@ namespace Voyagers.Utilities.ObjectComparer
             {
                 yield return
                     new ObjectVariance(
-                        String.Format("{0}.Count()", parentVariance != null ? parentVariance.PropertyName : "this"),
+                        $"{(parentVariance != null ? parentVariance.PropertyName : "this")}.Count()",
                         value1List.Count,
                         value2List.Count,
                         parentVariance);
@@ -273,7 +273,7 @@ namespace Voyagers.Utilities.ObjectComparer
             {
                 // Optional key object used in here since GetEnumerableVariancesByKey will eventually route to here
                 // propertyName will be assigned "this[i]" when comparing by position or key.ToString() when comparing by key
-                string propertyName = key == null ? String.Format("this[{0}]", i) : key.ToString();
+                string propertyName = key?.ToString() ?? $"this[{i}]";
 
                 if (AreObjectsTraversed(value1List[i], value2List[i]))
                 {
@@ -342,13 +342,13 @@ namespace Voyagers.Utilities.ObjectComparer
             // ReferenceEquals instead of == because == may be overridden
             if (ReferenceEquals(object1, null))
             {
-                throw new ArgumentNullException("object1");
+                throw new ArgumentNullException(nameof(object1));
             }
 
             // ReferenceEquals instead of == because == may be overridden
             if (ReferenceEquals(object2, null))
             {
-                throw new ArgumentNullException("object2");
+                throw new ArgumentNullException(nameof(object2));
             }
 
             IEnumerable<PropertyInfo> object1PropertyInfos = ReflectionHelper.GetPropertyInfos(object1.GetType());
