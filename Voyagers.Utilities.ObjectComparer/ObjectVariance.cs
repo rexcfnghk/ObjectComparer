@@ -7,11 +7,6 @@ namespace Voyagers.Utilities.ObjectComparer
     /// </summary>
     public class ObjectVariance : IEquatable<ObjectVariance>
     {
-        private readonly string _propertyName;
-        private readonly object _propertyValue1;
-        private readonly object _propertyValue2;
-        private readonly ObjectVariance _parentVariance;
-
         /// <summary>
         /// Constructs an instance of ObjectVariance.
         /// </summary>
@@ -24,43 +19,31 @@ namespace Voyagers.Utilities.ObjectComparer
                               object propertyValue2,
                               ObjectVariance parentVariance)
         {
-            _propertyName = propertyName;
-            _propertyValue1 = propertyValue1;
-            _propertyValue2 = propertyValue2;
-            _parentVariance = parentVariance;
+            PropertyName = propertyName;
+            PropertyValue1 = propertyValue1;
+            PropertyValue2 = propertyValue2;
+            ParentVariance = parentVariance;
         }
 
         /// <summary>
         /// Property that returns the name of the property that is being compared
         /// </summary>
-        public string PropertyName
-        {
-            get { return _propertyName; }
-        }
+        public string PropertyName { get; }
 
         /// <summary>
         /// Property that returns value 1 of the property that is being compared
         /// </summary>
-        public object PropertyValue1
-        {
-            get { return _propertyValue1; }
-        }
+        public object PropertyValue1 { get; }
 
         /// <summary>
         /// Property that returns value 2 of the property that is being compared
         /// </summary>
-        public object PropertyValue2
-        {
-            get { return _propertyValue2; }
-        }
+        public object PropertyValue2 { get; }
 
         /// <summary>
         /// Property that returns the recursive, outer variance that this variance arises from
         /// </summary>
-        public ObjectVariance ParentVariance
-        {
-            get { return _parentVariance; }
-        }
+        public ObjectVariance ParentVariance { get; }
 
         /// <summary>
         /// Overloaded == operator that compares the equality of two ObjectVariances
@@ -101,9 +84,9 @@ namespace Voyagers.Utilities.ObjectComparer
                 return true;
             }
 
-            return String.Equals(_propertyName, other._propertyName) && Equals(_propertyValue1, other._propertyValue1) &&
-                   Equals(_propertyValue2, other._propertyValue2) &&
-                   Equals(_parentVariance, other._parentVariance);
+            return String.Equals(PropertyName, other.PropertyName) && Equals(PropertyValue1, other.PropertyValue1) &&
+                   Equals(PropertyValue2, other.PropertyValue2) &&
+                   Equals(ParentVariance, other.ParentVariance);
         }
 
         /// <summary>
@@ -130,10 +113,10 @@ namespace Voyagers.Utilities.ObjectComparer
             unchecked
             {
                 int hashCode = 17;
-                hashCode = (hashCode * 23) + (_propertyName != null ? _propertyName.GetHashCode() : 0);
-                hashCode = (hashCode * 23) + (_propertyValue1 != null ? _propertyValue1.GetHashCode() : 0);
-                hashCode = (hashCode * 23) + (_propertyValue2 != null ? _propertyValue2.GetHashCode() : 0);
-                hashCode = (hashCode * 23) + (_parentVariance != null ? _parentVariance.GetHashCode() : 0);
+                hashCode = (hashCode * 23) + (PropertyName?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 23) + (PropertyValue1?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 23) + (PropertyValue2?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 23) + (ParentVariance?.GetHashCode() ?? 0);
                 return hashCode;
             }
         }

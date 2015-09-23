@@ -28,7 +28,7 @@ namespace Voyagers.Utilities.ObjectComparer
                                         interfaceType.IsGenericType &&
                                         interfaceType.GetGenericTypeDefinition() == typeof(IEnumerable<>)
                                     select interfaceType).FirstOrDefault();
-            genericArgument = ienumerableType != null ? ienumerableType.GetGenericArguments()[0] : null;
+            genericArgument = ienumerableType?.GetGenericArguments()[0];
             return genericArgument != null;
         }
 
