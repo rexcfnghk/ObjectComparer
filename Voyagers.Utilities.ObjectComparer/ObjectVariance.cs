@@ -51,10 +51,7 @@ namespace Voyagers.Utilities.ObjectComparer
         /// <param name="left">Left ObjectVariance</param>
         /// <param name="right">Right ObjectVariance</param>
         /// <returns>True or False</returns>
-        public static bool operator ==(ObjectVariance left, ObjectVariance right)
-        {
-            return Equals(left, right);
-        }
+        public static bool operator ==(ObjectVariance left, ObjectVariance right) => Equals(left, right);
 
         /// <summary>
         /// Overloaded != opeartor that compares the equality of two ObjectVariances
@@ -62,10 +59,7 @@ namespace Voyagers.Utilities.ObjectComparer
         /// <param name="left">Left ObjectVariance</param>
         /// <param name="right">Right ObjectVariance</param>
         /// <returns>True or False</returns>
-        public static bool operator !=(ObjectVariance left, ObjectVariance right)
-        {
-            return !Equals(left, right);
-        }
+        public static bool operator !=(ObjectVariance left, ObjectVariance right) => !Equals(left, right);
 
         /// <summary>
         /// IEquatable&lt;ObjectVariance&gt;.Equals(ObjectVariance) implementaion
@@ -84,7 +78,8 @@ namespace Voyagers.Utilities.ObjectComparer
                 return true;
             }
 
-            return String.Equals(PropertyName, other.PropertyName) && Equals(PropertyValue1, other.PropertyValue1) &&
+            return string.Equals(PropertyName, other.PropertyName, StringComparison.Ordinal) &&
+                   Equals(PropertyValue1, other.PropertyValue1) &&
                    Equals(PropertyValue2, other.PropertyValue2) &&
                    Equals(ParentVariance, other.ParentVariance);
         }
@@ -94,15 +89,7 @@ namespace Voyagers.Utilities.ObjectComparer
         /// </summary>
         /// <param name="obj">Object that is being compared for equality</param>
         /// <returns>True or False</returns>
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj))
-            {
-                return false;
-            }
-
-            return ReferenceEquals(this, obj) || Equals(obj as ObjectVariance);
-        }
+        public override bool Equals(object obj) => Equals(obj as ObjectVariance);
 
         /// <summary>
         /// GetHashCode implementation credits to Jon Skeet: http://stackoverflow.com/questions/263400/what-is-the-best-algorithm-for-an-overridden-system-object-gethashcode
