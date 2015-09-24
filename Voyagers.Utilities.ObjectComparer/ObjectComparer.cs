@@ -14,12 +14,22 @@ namespace Voyagers.Utilities.ObjectComparer
         private static readonly object TraversedObjectLock = new object();
 
         /// <summary>
-        ///  Return object variances between two dynamic objects, serves as an entry point to all comparisons
+        ///  Returns object variances between two objects
         /// </summary>
-        /// <param name="object1"></param>
-        /// <param name="object2"></param>
+        /// <param name="object1">The first object to be compared</param>
+        /// <param name="object2">The second object to be compared</param>
         /// <returns>IEnumerable&lt;ObjectVariance&gt; that contains all differences</returns>
         public static IEnumerable<ObjectVariance> GetObjectVariances(object object1, object object2)
+            => GetObjectVariances<object>(object1, object2);
+
+        /// <summary>
+        /// Returns object variances between two objects of the same generic type
+        /// </summary>
+        /// <typeparam name="T">Generic type parameter of the two objects</typeparam>
+        /// <param name="object1">The first object to be compared</param>
+        /// <param name="object2">The second object to be compared</param>
+        /// <returns>IEnumerable&lt;ObjectVariance&gt; that contains all differences</returns>
+        public static IEnumerable<ObjectVariance> GetObjectVariances<T>(T object1, T object2)
         {
             if (ReferenceEquals(object1, null) && ReferenceEquals(object2, null))
             {
@@ -55,8 +65,8 @@ namespace Voyagers.Utilities.ObjectComparer
                        : GetObjectVariances(object1, object2, null);
         }
 
-        private static IEnumerable<ObjectVariance> GetObjectVariances(object object1,
-                                                                      object object2,
+        private static IEnumerable<ObjectVariance> GetObjectVariances<T>(T object1,
+                                                                      T object2,
                                                                       ObjectVariance parentVariance)
         {
             // Base case where object1 and object2 are PropertyInfo objects already
@@ -154,8 +164,8 @@ namespace Voyagers.Utilities.ObjectComparer
                                                                                        object2 as IEnumerable,
                                                                                        propertyInfos,
                                                                                        parentVariance)
-                                                         : GetEnumerableVariancesByPosition(object1 as IEnumerable,
-                                                                                            object2 as IEnumerable,
+                                                         : GetEnumerableVariancesByPosition(object1 as IEnumerable<T>,
+                                                                                            object2 as IEnumerable<T>,
                                                                                             parentVariance);
                 foreach (ObjectVariance objectVariance in result)
                 {
@@ -182,8 +192,8 @@ namespace Voyagers.Utilities.ObjectComparer
             }
         }
 
-        private static IEnumerable<ObjectVariance> GetEnumerableVariancesByKey(IEnumerable enumerable1,
-                                                                               IEnumerable enumerable2,
+        private static IEnumerable<ObjectVariance> GetEnumerableVariancesByKey<T>(IEnumerable<T> enumerable1,
+                                                                               IEnumerable<T> enumerable2,
                                                                                IEnumerable<PropertyInfo> propertyInfos,
                                                                                ObjectVariance parentVariance)
         {
@@ -245,14 +255,14 @@ namespace Voyagers.Utilities.ObjectComparer
             }
         }
 
-        private static IEnumerable<ObjectVariance> GetEnumerableVariancesByPosition(IEnumerable object1,
-                                                                                    IEnumerable object2,
+        private static IEnumerable<ObjectVariance> GetEnumerableVariancesByPosition<T>(IEnumerable<T> object1,
+                                                                                    IEnumerable<T> object2,
                                                                                     ObjectVariance parentVariance,
                                                                                     object key = null)
         {
             // Boxing here, but we cannot determine what generic type argument the caller will pass
-            List<object> value1List = object1.Cast<object>().ToList();
-            List<object> value2List = object2.Cast<object>().ToList();
+            List<T> value1List = object1.ToList();
+            List<T> value2List = object2.ToList();
 
             // If the count of IEnumerable is not equal, the two IEnumerable are definitely unequal
             if (value1List.Count != value2List.Count)
@@ -294,8 +304,8 @@ namespace Voyagers.Utilities.ObjectComparer
             }
         }
 
-        private static IEnumerable<ObjectVariance> CheckNullObjectsVariance(object object1,
-                                                                            object object2,
+        private static IEnumerable<ObjectVariance> CheckNullObjectsVariance<T>(T object1,
+                                                                            T object2,
                                                                             ObjectVariance parentVariance)
         {
             var propertyInfo1 = object1 as PropertyInfo;
@@ -335,9 +345,9 @@ namespace Voyagers.Utilities.ObjectComparer
             yield return new ObjectVariance(null, object1, null, parentVariance);
         }
 
-        private static IEnumerable<ObjectVariance> GetVariancesFromProperties(object object1,
-                                                                              object object2,
-                                                                              ObjectVariance parentVariance)
+        private static IEnumerable<ObjectVariance> GetVariancesFromProperties<T>(T object1,
+                                                                                 T object2,
+                                                                                 ObjectVariance parentVariance)
         {
             // ReferenceEquals instead of == because == may be overridden
             if (ReferenceEquals(object1, null))
