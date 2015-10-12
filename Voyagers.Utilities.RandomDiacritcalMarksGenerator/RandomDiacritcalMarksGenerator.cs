@@ -6,10 +6,11 @@ namespace Voyagers.Utilities.RandomDiacritcalMarksGenerator
 {
     public static class RandomDiacritcalMarksGenerator
     {
+        // Combining Diacritcal Marks are from U+0300 to U+036F
         private const int _rangeLowest = 768;
         private const int _rangeHighest = 879;
 
-        public static string Abuse(this string input, int threshold)
+        public static string Abuse(this string input, int maxDiacritcalMarksPerGraphemeCluster)
         {
             if (input == null)
             {
@@ -21,24 +22,26 @@ namespace Voyagers.Utilities.RandomDiacritcalMarksGenerator
             TextElementEnumerator textElementEnumerator = StringInfo.GetTextElementEnumerator(input);
             while (textElementEnumerator.MoveNext())
             {
-                int numberOfDiacriticalMarks = random.Next(-1, threshold) + 1;
-
+                int numberOfDiacriticalMarks = random.Next(-1, maxDiacritcalMarksPerGraphemeCluster) + 1;
+                stringBuilder.Append(AddCombiningDiacritics(textElementEnumerator.GetTextElement(),
+                                                            numberOfDiacriticalMarks));
             }
 
-            throw new NotImplementedException();
+            return stringBuilder.ToString();
         }
 
         private static string AddCombiningDiacritics(string input, int number)
         {
             var stringBuilder = new StringBuilder(input, input.Length + number);
-            var random = new Random();
             for (int i = 0; i < number; i++)
             {
-                byte randomDiacrtic = Convert.ToByte(random.Next(_rangeLowest - 1, _rangeHighest) + 1);
-                stringBuilder.Append(Encoding.Unicode.GetString(new[] { randomDiacrtic }));
+                stringBuilder.Append(GenerateRandomCombiningDiacritcalMark());
             }
 
             return stringBuilder.ToString();
         }
+
+        private static string GenerateRandomCombiningDiacritcalMark()
+            => char.ConvertFromUtf32(new Random().Next(_rangeLowest - 1, _rangeHighest) + 1);
     }
 }

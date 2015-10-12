@@ -1,11 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Voyagers.Utilities.ObjectComparer", "Voyagers.Utilities.ObjectComparer\Voyagers.Utilities.ObjectComparer.csproj", "{AA908E47-2D31-4B03-88A4-CFFFD526619E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Voyagers.Utilities.ObjectComparer.Tests", "Voyagers.Utilities.ObjectComparer.Tests\Voyagers.Utilities.ObjectComparer.Tests.csproj", "{B157866A-94F6-47B6-972E-87A830A88A2C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Voyagers.Utilities.RandomDiacritcalMarksGenerator", "Voyagers.Utilities.RandomDiacritcalMarksGenerator\Voyagers.Utilities.RandomDiacritcalMarksGenerator.csproj", "{D61889DB-AEBF-4AF7-B0D4-B39BD65A5AD1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Voyagers.Utilities.RandomDiacriticalMarksGenerator.Tests", "Voyagers.Utilities.RandomDiacriticalMarksGenerator.Tests\Voyagers.Utilities.RandomDiacriticalMarksGenerator.Tests.csproj", "{92A97C11-991D-49E7-A479-63962B1BC104}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +25,14 @@ Global
 		{B157866A-94F6-47B6-972E-87A830A88A2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B157866A-94F6-47B6-972E-87A830A88A2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B157866A-94F6-47B6-972E-87A830A88A2C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D61889DB-AEBF-4AF7-B0D4-B39BD65A5AD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D61889DB-AEBF-4AF7-B0D4-B39BD65A5AD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D61889DB-AEBF-4AF7-B0D4-B39BD65A5AD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D61889DB-AEBF-4AF7-B0D4-B39BD65A5AD1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92A97C11-991D-49E7-A479-63962B1BC104}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92A97C11-991D-49E7-A479-63962B1BC104}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92A97C11-991D-49E7-A479-63962B1BC104}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92A97C11-991D-49E7-A479-63962B1BC104}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
