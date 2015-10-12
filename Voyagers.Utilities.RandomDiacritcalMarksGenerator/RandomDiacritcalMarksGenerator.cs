@@ -7,8 +7,9 @@ namespace Voyagers.Utilities.RandomDiacritcalMarksGenerator
     public static class RandomDiacritcalMarksGenerator
     {
         // Combining Diacritcal Marks are from U+0300 to U+036F
-        private const int _rangeLowest = 768;
-        private const int _rangeHighest = 879;
+        private const int _rangeLowest = 0x0300;
+        private const int _rangeHighest = 0x036F;
+        private static readonly Random _random = new Random();
 
         public static string Abuse(this string input, int maxDiacritcalMarksPerGraphemeCluster)
         {
@@ -18,11 +19,10 @@ namespace Voyagers.Utilities.RandomDiacritcalMarksGenerator
             }
 
             var stringBuilder = new StringBuilder();
-            var random = new Random();
             TextElementEnumerator textElementEnumerator = StringInfo.GetTextElementEnumerator(input);
             while (textElementEnumerator.MoveNext())
             {
-                int numberOfDiacriticalMarks = random.Next(-1, maxDiacritcalMarksPerGraphemeCluster) + 1;
+                int numberOfDiacriticalMarks = _random.Next(-1, maxDiacritcalMarksPerGraphemeCluster) + 1;
                 stringBuilder.Append(AddCombiningDiacritics(textElementEnumerator.GetTextElement(),
                                                             numberOfDiacriticalMarks));
             }
@@ -42,6 +42,6 @@ namespace Voyagers.Utilities.RandomDiacritcalMarksGenerator
         }
 
         private static string GenerateRandomCombiningDiacritcalMark()
-            => char.ConvertFromUtf32(new Random().Next(_rangeLowest - 1, _rangeHighest) + 1);
+            => char.ConvertFromUtf32(_random.Next(_rangeLowest - 1, _rangeHighest) + 1);
     }
 }
