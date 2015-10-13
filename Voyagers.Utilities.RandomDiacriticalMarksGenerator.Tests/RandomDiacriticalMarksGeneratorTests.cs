@@ -1,6 +1,8 @@
-﻿using System;
+using System;
 using System.Globalization;
+using System.Linq;
 using Voyagers.Utilities.RandomDiacritcalMarksGenerator;
+using Voyagers.Utilities.RandomDiacriticalMarksGenerator.Tests.Utilities;
 using Xunit;
 
 namespace Voyagers.Utilities.RandomDiacriticalMarksGenerator.Tests
@@ -10,7 +12,9 @@ namespace Voyagers.Utilities.RandomDiacriticalMarksGenerator.Tests
         [Fact]
         public void RandomDiacriticalMarksGenerator_InputNull_Throws()
         {
-            var exception = Record.Exception(() => ((string)null).Abuse(5));
+            const string nullString = null;
+
+            var exception = Record.Exception(() => nullString.Abuse(5));
 
             Assert.IsType<ArgumentNullException>(exception);
         }
@@ -33,6 +37,16 @@ namespace Voyagers.Utilities.RandomDiacriticalMarksGenerator.Tests
             var result = testString.Abuse(50);
 
             Assert.True(new StringInfo(testString).LengthInTextElements ==  new StringInfo(result).LengthInTextElements);
+        }
+
+        [Fact]
+        public void RandomDiacriticalMarksGenerator_CharactersOutsideBmp_StillWorks()
+        {
+            const string test = "♩";
+
+            var result = test.Abuse(10);
+
+            Assert.True(new StringInfo(test).LengthInTextElements == new StringInfo(result).LengthInTextElements);
         }
     }
 }
