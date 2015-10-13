@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace Voyagers.Utilities.RandomDiacriticalMarksGenerator.Tests.Utilities
+namespace Voyagers.Utilities.RandomDiacritcalMarksGenerator.Utilities
 {
     internal class TextElementEnumerable : IEnumerable<string>
     {

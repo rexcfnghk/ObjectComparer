@@ -42,6 +42,8 @@
   <ItemGroup>
     <Compile Include="RandomDiacritcalMarksGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\TextElementEnumerable.cs" />
+    <Compile Include="Utilities\TextElementEnumerableUtilities.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -69,8 +69,6 @@
     <Compile Include="RandomDiacriticalMarksGeneratorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TextElementEnumerableTests.cs" />
-    <Compile Include="Utilities\TextElementEnumerable.cs" />
-    <Compile Include="Utilities\TextElementEnumerableUtilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

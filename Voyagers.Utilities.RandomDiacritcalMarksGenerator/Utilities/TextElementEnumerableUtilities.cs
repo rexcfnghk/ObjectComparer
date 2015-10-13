@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Voyagers.Utilities.RandomDiacriticalMarksGenerator.Tests.Utilities
+namespace Voyagers.Utilities.RandomDiacritcalMarksGenerator.Utilities
 {
     public static class TextElementEnumerableUtilities
     {

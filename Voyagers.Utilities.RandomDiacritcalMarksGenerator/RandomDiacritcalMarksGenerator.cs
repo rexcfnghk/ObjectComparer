@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Globalization;
 using System.Text;
+using Voyagers.Utilities.RandomDiacritcalMarksGenerator.Utilities;
 
 namespace Voyagers.Utilities.RandomDiacritcalMarksGenerator
 {
@@ -11,7 +11,7 @@ namespace Voyagers.Utilities.RandomDiacritcalMarksGenerator
         private const int _rangeHighest = 0x036F;
         private static readonly Random _random = new Random();
 
-        public static string Abuse(this string input, int maxDiacritcalMarksPerGraphemeCluster)
+        public static string Abuse(this string input, int maxDiacritcalMarksPerGrapheme)
         {
             if (input == null)
             {
@@ -19,12 +19,10 @@ namespace Voyagers.Utilities.RandomDiacritcalMarksGenerator
             }
 
             var stringBuilder = new StringBuilder();
-            TextElementEnumerator textElementEnumerator = StringInfo.GetTextElementEnumerator(input);
-            while (textElementEnumerator.MoveNext())
+            foreach (string textElement in input.ToTextElements())
             {
-                int numberOfDiacriticalMarks = _random.Next(-1, maxDiacritcalMarksPerGraphemeCluster) + 1;
-                stringBuilder.Append(AddCombiningDiacritics(textElementEnumerator.GetTextElement(),
-                                                            numberOfDiacriticalMarks));
+                int numberOfDiacriticalMarks = _random.Next(-1, maxDiacritcalMarksPerGrapheme) + 1;
+                stringBuilder.Append(AddCombiningDiacritics(textElement, numberOfDiacriticalMarks));
             }
 
             return stringBuilder.ToString();

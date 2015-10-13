@@ -1,8 +1,6 @@
 using System;
 using System.Globalization;
-using System.Linq;
 using Voyagers.Utilities.RandomDiacritcalMarksGenerator;
-using Voyagers.Utilities.RandomDiacriticalMarksGenerator.Tests.Utilities;
 using Xunit;
 
 namespace Voyagers.Utilities.RandomDiacriticalMarksGenerator.Tests
