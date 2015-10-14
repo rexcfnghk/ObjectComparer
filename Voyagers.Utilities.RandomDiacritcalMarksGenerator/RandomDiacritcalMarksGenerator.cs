@@ -21,7 +21,7 @@ namespace Voyagers.Utilities.RandomDiacritcalMarksGenerator
             var stringBuilder = new StringBuilder();
             foreach (string textElement in input.ToTextElements())
             {
-                int numberOfDiacriticalMarks = _random.Next(-1, maxDiacritcalMarksPerGrapheme) + 1;
+                int numberOfDiacriticalMarks = GetRandomNumber(0, maxDiacritcalMarksPerGrapheme);
                 stringBuilder.Append(AddCombiningDiacritics(textElement, numberOfDiacriticalMarks));
             }
 
@@ -39,7 +39,10 @@ namespace Voyagers.Utilities.RandomDiacritcalMarksGenerator
             return stringBuilder.ToString();
         }
 
+        private static int GetRandomNumber(int minValueInclusive = 0, int maxValueInclusive = 1)
+            => _random.Next(minValueInclusive - 1, maxValueInclusive) + 1;
+
         private static string GenerateRandomCombiningDiacritcalMark()
-            => char.ConvertFromUtf32(_random.Next(_rangeLowest - 1, _rangeHighest) + 1);
+            => char.ConvertFromUtf32(GetRandomNumber(_rangeLowest, _rangeHighest));
     }
 }
