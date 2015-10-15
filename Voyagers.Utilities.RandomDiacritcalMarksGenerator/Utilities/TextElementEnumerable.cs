@@ -8,9 +8,13 @@ namespace Voyagers.Utilities.RandomDiacritcalMarksGenerator.Utilities
     {
         private readonly TextElementEnumerator _enumerator;
 
-        public TextElementEnumerable(string inputString)
+        public TextElementEnumerable(string inputString) : this(StringInfo.GetTextElementEnumerator(inputString))
         {
-            _enumerator = StringInfo.GetTextElementEnumerator(inputString);
+        }
+
+        public TextElementEnumerable(TextElementEnumerator enumerator)
+        {
+            _enumerator = enumerator;
         }
 
         public IEnumerator<string> GetEnumerator()
