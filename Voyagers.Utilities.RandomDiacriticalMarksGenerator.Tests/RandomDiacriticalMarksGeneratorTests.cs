@@ -18,6 +18,30 @@ namespace Voyagers.Utilities.RandomDiacriticalMarksGenerator.Tests
         }
 
         [Fact]
+        public void RandomDiacriticalMarksGenerator_ZeroDiacriticalMarks_ReturnsOriginalString()
+        {
+            const int zero = 0;
+            const string foo = "foo";
+
+            var result = foo.Abuse(zero);
+
+            Assert.Equal("foo", result);
+            Assert.Equal(foo, result);
+        }
+
+        [Fact]
+        public void RandomDiacriticalMarksGenerator_MaxNumberOfdiacriticalMarksLessThanZero_Throws()
+        {
+            const int maximumNumberOfDiacrticalMarks = -1;
+            const string foo = "foo";
+
+            var exception = Record.Exception(() => foo.Abuse(maximumNumberOfDiacrticalMarks));
+
+            Assert.NotNull(exception);
+            Assert.IsType<ArgumentOutOfRangeException>(exception);
+        }
+
+        [Fact]
         public void RandomDiacriticalMarksGenerator_RandomString_LengthLongerThanOriginal()
         {
             const string testString = "foo";

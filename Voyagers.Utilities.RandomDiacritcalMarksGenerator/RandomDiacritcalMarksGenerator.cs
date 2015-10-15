@@ -18,17 +18,22 @@ namespace Voyagers.Utilities.RandomDiacritcalMarksGenerator
                 throw new ArgumentNullException(nameof(input));
             }
 
+            if (maxDiacritcalMarksPerGrapheme < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(maxDiacritcalMarksPerGrapheme));
+            }
+
             var stringBuilder = new StringBuilder();
             foreach (string textElement in input.ToTextElements())
             {
                 int numberOfDiacriticalMarks = GetRandomNumber(0, maxDiacritcalMarksPerGrapheme);
-                stringBuilder.Append(AddCombiningDiacritics(textElement, numberOfDiacriticalMarks));
+                stringBuilder.Append(AddRandomCombiningDiacritic(textElement, numberOfDiacriticalMarks));
             }
 
             return stringBuilder.ToString();
         }
 
-        private static string AddCombiningDiacritics(string input, int number)
+        private static string AddRandomCombiningDiacritic(string input, int number)
         {
             var stringBuilder = new StringBuilder(input, input.Length + number);
             for (int i = 0; i < number; i++)
